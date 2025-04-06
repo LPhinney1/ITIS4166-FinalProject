@@ -8,7 +8,6 @@ export const migrator = new Migrator({
     provider: new FileMigrationProvider({
         fs,
         path,
-        // This needs to be an absolute path.
         migrationFolder: path.join(import.meta.dirname, 'migrations'),
     }),
 });
@@ -19,15 +18,15 @@ export async function migrateToLatest() {
     let migrationErrored = false;
     results?.forEach((it) => {
         if (it.status === 'Success') {
-            console.log(`migration "${it.migrationName}" was executed successfully`);
+            console.log(`Migration "${it.migrationName}": \x1b[32mSUCCESS\x1b[0m\n`);
         } else if (it.status === 'Error') {
-            console.error(`failed to execute migration "${it.migrationName}"`);
+            console.error(`Migration "${it.migrationName}": \x1b[31mERROR\x1b[0m`);
             migrationErrored = true;
         }
     });
 
     if (error || migrationErrored) {
-        console.error('failed to migrate');
+        console.error('Failed to migrate.');
         console.error(error);
         process.exit(1);
     }

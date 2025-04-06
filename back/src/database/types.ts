@@ -2,10 +2,11 @@ import { Generated } from 'kysely';
 
 export type Database = {
     users: UserTable;
-    blog_posts: BlogPostTable;
-    comments: CommentTable;
+    bookmarks: BookmarkTable;
     tags: TagTable;
-    blog_post_tags: BlogPostTagTable;
+    collections: CollectionTable;
+    bookmark_tags: BookmarkTagTable;
+    collection_bookmarks: CollectionBookmarkTable;
 };
 
 export type UserTable = {
@@ -17,22 +18,12 @@ export type UserTable = {
     updated_at: Date;
 };
 
-export type BlogPostTable = {
+export type BookmarkTable = {
     id: Generated<number>;
     user_id: number;
     title: string;
-    slug: string;
-    content: string;
-    created_at: Date;
-    updated_at: Date;
-};
-
-export type CommentTable = {
-    id: Generated<number>;
-    user_id: number;
-    post_id: number;
-    parent_comment_id: number | null;
-    content: string;
+    url: string;
+    description: string | null;
     created_at: Date;
     updated_at: Date;
 };
@@ -41,9 +32,27 @@ export type TagTable = {
     id: Generated<number>;
     name: string;
     slug: string;
+    created_at: Date;
+    updated_at: Date;
 };
 
-export type BlogPostTagTable = {
-    blog_post_id: number;
+export type CollectionTable = {
+    id: Generated<number>;
+    user_id: number;
+    name: string;
+    description: string | null;
+    created_at: Date;
+    updated_at: Date;
+};
+
+export type BookmarkTagTable = {
+    bookmark_id: number;
     tag_id: number;
+    created_at: Date;
+};
+
+export type CollectionBookmarkTable = {
+    collection_id: number;
+    bookmark_id: number;
+    created_at: Date;
 };
