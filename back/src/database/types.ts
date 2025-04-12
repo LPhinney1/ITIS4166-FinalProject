@@ -13,7 +13,7 @@ export type UserTable = {
     id: Generated<number>;
     username: string;
     email: string;
-    password_hash: string;
+    password: string;
     created_at: Date;
     updated_at: Date;
 };

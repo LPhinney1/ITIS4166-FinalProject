@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { migrateToLatest } from './database/migrate.js';
 import { db } from './database/db.js';
+import appRouter from './routes/routes.js'
 
 await migrateToLatest();
 const app = express();
@@ -31,4 +32,5 @@ app.get('/health', async (req, res) => {
     }
 });
 
+app.use('/api', appRouter)
 app.listen(3000, () => console.log('Backend running @\n\x1b[33mhttp://localhost:3000/\x1b[0m'));
