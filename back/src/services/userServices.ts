@@ -23,7 +23,7 @@ export async function updateUser(updatedUser: Partial<User>): Promise<User> {
         id: updatedUser.id,
         username: updatedUser.username,
         email: updatedUser.email,
-        password: updatedUser.password
+        password: updatedUser.password,
     });
 }
 
