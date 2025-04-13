@@ -1,20 +1,20 @@
 import express from 'express';
-import * as services from '../services/services.js';
+import * as userServices from '../services/userServices.js';
 
-const appRouter = express.Router();
+const userRouter = express.Router();
 
-appRouter.get('/users', async (req, res, next) => {
+userRouter.get('/', async (req, res, next) => {
     try {
-        const users = await services.getAllUsers();
+        const users = await userServices.getAllUsers();
         res.status(200).json(users);
     } catch (err) {
         res.status(400);
         next(err);
     }
 });
-appRouter.get('/users/:id', async (req, res, next) => {
+userRouter.get('/:id', async (req, res, next) => {
     try {
-        const user = await services.getUserById(+req.params.id);
+        const user = await userServices.getUserById(+req.params.id);
         res.status(200).json(user);
     } catch (err) {
         res.status(400);
@@ -22,9 +22,9 @@ appRouter.get('/users/:id', async (req, res, next) => {
     }
 });
 
-appRouter.post('/users', async (req, res, next) => {
+userRouter.post('/', async (req, res, next) => {
     try {
-        const user = await services.createUser(req.body);
+        const user = await userServices.createUser(req.body);
         res.status(201).json(user);
     } catch (err) {
         res.status(400);
@@ -32,9 +32,9 @@ appRouter.post('/users', async (req, res, next) => {
     }
 });
 
-appRouter.put('/users/', async (req, res, next) => {
+userRouter.put('/', async (req, res, next) => {
     try {
-        const user = await services.updateUser(req.body);
+        const user = await userServices.updateUser(req.body);
         res.status(200).json(user);
     } catch (err) {
         res.status(400);
@@ -42,13 +42,13 @@ appRouter.put('/users/', async (req, res, next) => {
     }
 });
 
-appRouter.delete('/users/:id', async (req, res, next) => {
+userRouter.delete('/:id', async (req, res, next) => {
     try {
-        await services.deleteUser(+req.params.id);
+        await userServices.deleteUser(+req.params.id);
         res.status(200).json({ msg: `User ${req.params.id} deleted successfully` });
     } catch (err) {
         res.status(400);
         next(err);
     }
 });
-export default appRouter;
+export default userRouter;

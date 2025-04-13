@@ -52,6 +52,7 @@ export async function updateUser(user: Partial<User>): Promise<User> {
             .set({
                 username: user.username,
                 email: user.email,
+                password: user.password,
                 updated_at: new Date(Date.now()),
             })
             .where('id', '=', Number(user.id))
