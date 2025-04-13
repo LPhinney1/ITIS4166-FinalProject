@@ -1,5 +1,6 @@
 import { Kysely } from 'kysely';
 
+// eslint-disable-next-line
 export async function up(db: Kysely<any>): Promise<void> {
     await db.schema
         .createTable('users')
@@ -70,6 +71,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     console.log('Created table: collection_bookmarks');
 }
 
+// eslint-disable-next-line
 export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropTable('users').execute();
 }
