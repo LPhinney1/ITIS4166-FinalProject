@@ -10,4 +10,4 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/users', userRouter);
 
-app.listen(3000, () => console.log('Backend running @\n\x1b[33mhttp://localhost:3000/\x1b[0m'));
+app.listen(3000, () => console.log('Backend running @\n\x1b[35mhttp://localhost:3000/\x1b[0m'));
