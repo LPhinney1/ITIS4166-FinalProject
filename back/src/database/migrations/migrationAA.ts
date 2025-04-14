@@ -74,9 +74,4 @@ export async function up(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line
 export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropTable('users').execute();
-    await db.schema.dropTable('bookmarks').execute();
-    await db.schema.dropTable('tags').execute();
-    await db.schema.dropTable('collections').execute();
-    await db.schema.dropTable('bookmark_tags').execute();
-    await db.schema.dropTable('collection_bookmarks').execute();
 }
