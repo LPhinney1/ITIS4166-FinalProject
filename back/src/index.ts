@@ -3,6 +3,7 @@ import cors from 'cors';
 import { migrateToLatest } from './database/migrate.js';
 import userRouter from './routes/userRoutes.js';
 import { db } from './database/db.js';
+import * as dotenv from 'dotenv'; dotenv.config();
 
 await migrateToLatest();
 
@@ -34,4 +35,6 @@ app.get('/health', async (req, res) => {
 
 app.use('/api/users', userRouter);
 
-app.listen(3000, () => console.log('Backend running @\n\x1b[35mhttp://localhost:3000/\x1b[0m'));
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Backend running @\n\x1b[35mhttp://${HOST}:${PORT}/\x1b[0m`));

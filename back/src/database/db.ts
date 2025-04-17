@@ -1,5 +1,4 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import * as dotenv from 'dotenv'; dotenv.config();
 import pg from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Database } from './types.js';
@@ -10,7 +9,7 @@ const dialect = new PostgresDialect({
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
         password: process.env.DB_PWORD,
-        port: Number(process.env.PORT),
+        port: 5432,
         max: 10,
     }),
 });
