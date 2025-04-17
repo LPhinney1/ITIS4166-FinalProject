@@ -9,9 +9,8 @@ function App() {
 
     const checkHealth = async () => {
         try {
-            const host = import.meta.env.HOST
-            const port = import.meta.env.PORT
-            const res = await fetch(`http://${host}:${port}/health`)
+            const baseUrl = import.meta.env.VITE_URL
+            const res = await fetch(`${baseUrl}/health`)
             const data = await res.json()
             console.log('Health Check Data:', data)
             setHealthData(data)
