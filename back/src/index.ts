@@ -36,5 +36,4 @@ app.get('/health', async (req, res) => {
 app.use('/api/users', userRouter);
 
 const HOST = process.env.HOST;
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Backend running @\n\x1b[35mhttp://${HOST}:${PORT}/\x1b[0m`));
+app.listen(3000, () => console.log(`Backend running @\n\x1b[35mhttp://${HOST}:3000/\x1b[0m`));
