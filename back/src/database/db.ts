@@ -4,10 +4,10 @@ import { Database } from './types.js';
 
 const dialect = new PostgresDialect({
     pool: new pg.Pool({
-        database: 'projectDB',
-        host: 'localhost',
-        user: 'postgres',
-        password: 'postgres',
+        database: 'projectdb_t4l0',
+        host: 'postgresql://database_service:2MNd4DisGbgSExsnzgcn3c2F8wID7qha@dpg-d00hhepr0fns73e9vfng-a/projectdb_t4l0',
+        user: 'database_service',
+        password: '2MNd4DisGbgSExsnzgcn3c2F8wID7qha',
         port: 5432,
         max: 10,
     }),
