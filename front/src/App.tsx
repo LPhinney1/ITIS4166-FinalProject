@@ -9,7 +9,9 @@ function App() {
 
     const checkHealth = async () => {
         try {
-            const res = await fetch('https://itis4166-finalproject.onrender.com/health')
+            const host = import.meta.env.HOST || 'localhost'
+            const port = import.meta.env.PORT || '3000'
+            const res = await fetch(`http://${host}:${port}/health`)
             const data = await res.json()
             console.log('Health Check Data:', data)
             setHealthData(data)
