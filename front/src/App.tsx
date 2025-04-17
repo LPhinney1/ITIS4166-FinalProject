@@ -6,10 +6,10 @@ import './App.css'
 function App() {
     const [count, setCount] = useState(0)
     const [healthData, setHealthData] = useState<null | Record<string, any>>(null)
+    const baseUrl = import.meta.env.VITE_URL
 
     const checkHealth = async () => {
         try {
-            const baseUrl = import.meta.env.VITE_URL
             const res = await fetch(`${baseUrl}/health`)
             const data = await res.json()
             console.log('Health Check Data:', data)
