@@ -9,8 +9,8 @@ function App() {
 
     const checkHealth = async () => {
         try {
-            const host = import.meta.env.HOST || 'localhost'
-            const port = import.meta.env.PORT || '3000'
+            const host = import.meta.env.HOST
+            const port = import.meta.env.PORT
             const res = await fetch(`http://${host}:${port}/health`)
             const data = await res.json()
             console.log('Health Check Data:', data)
