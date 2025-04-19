@@ -2,8 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import { migrateToLatest } from './database/migrate.js';
 import userRouter from './routes/userRoutes.js';
+import bookmarkRouter from './routes/bookmarkRoutes.js';
+import tagRouter from './routes/tagRoutes.js';
+import collectionRouter from './routes/collectionRoutes.js';
 import { db } from './database/db.js';
-import * as dotenv from 'dotenv'; dotenv.config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 await migrateToLatest();
 
@@ -28,12 +32,15 @@ app.get('/health', async (req, res) => {
             collection_bookmarks,
         });
     } catch (error) {
-        console.error('Error fetching data for health check:', error);
+        console.error('Error fetching all tables:', error)
         res.status(500).json({ error: 'Failed to fetch data for health check' });
     }
 });
 
 app.use('/api/users', userRouter);
+app.use('/api/bookmarks', bookmarkRouter);
+app.use('/api/tags', tagRouter);
+app.use('/api/collections', collectionRouter);
 
 const HOST = process.env.HOST;
 app.listen(3000, () => console.log(`Backend running @\n\x1b[35mhttp://${HOST}:3000/\x1b[0m`));

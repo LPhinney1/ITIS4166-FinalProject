@@ -12,6 +12,7 @@ userRouter.get('/', async (req, res, next) => {
         next(err);
     }
 });
+
 userRouter.get('/:id', async (req, res, next) => {
     try {
         const user = await userServices.getUserById(+req.params.id);

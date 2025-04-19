@@ -10,7 +10,7 @@ export async function getUserById(id: number) {
 }
 
 export async function createUser(newUser: Partial<User>): Promise<User> {
-    if (!newUser.username || !newUser.email) return Promise.reject(new Error('name and email required'));
+    if (!newUser.username || !newUser.email) return Promise.reject(new Error('username and email required'));
     return userRepositories.createUser({ username: newUser.username, email: newUser.email });
 }
 
