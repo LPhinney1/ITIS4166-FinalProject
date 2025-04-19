@@ -34,11 +34,11 @@ function App() {
             <h2>Backend: Express + PostgreSQL + Kysely</h2>
             <h3>Deployed on Render</h3>
             <div className="card">
-                <button onClick={checkHealth} style={{ marginTop: '1rem' }}>
+                <button onClick={checkHealth} style={{ backgroundColor: 'olivedrab' }}>
                     Run Health Check
                 </button>
                 {healthData && (
-                    <pre style={{ textAlign: 'left', marginTop: '1rem', background: '#242424', padding: '1rem', border: '1pt solid black' }}>
+                    <pre style={{ textAlign: 'left', marginTop: '12px', background: '#242424', padding: '1rem', border: '1pt solid #e2e2e2', borderRadius: '9px' }}>
                         {JSON.stringify(healthData, null, 2)}
                     </pre>
                 )}
