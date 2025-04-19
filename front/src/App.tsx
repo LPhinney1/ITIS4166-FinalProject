@@ -4,7 +4,6 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-    const [count, setCount] = useState(0)
     const [healthData, setHealthData] = useState<null | Record<string, any>>(null)
     const baseUrl = import.meta.env.VITE_URL
 
@@ -31,15 +30,10 @@ function App() {
                 </a>
             </div>
             <h1>ITIS4166 Final Project</h1>
-            <h2>Frontend: Vite + React + MaterialUI</h2>
-            <h2>Backend: Express + Postgresql + Kysely</h2>
+            <h2>Frontend: React + Vite</h2>
+            <h2>Backend: Express + PostgreSQL + Kysely</h2>
             <h3>Deployed on Render</h3>
             <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-            </div>
-            <div>
                 <button onClick={checkHealth} style={{ marginTop: '1rem' }}>
                     Run Health Check
                 </button>
