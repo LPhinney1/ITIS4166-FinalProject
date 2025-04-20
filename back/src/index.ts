@@ -6,8 +6,7 @@ import bookmarkRouter from './routes/bookmarkRoutes.js';
 import tagRouter from './routes/tagRoutes.js';
 import collectionRouter from './routes/collectionRoutes.js';
 import { db } from './database/db.js';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import * as dotenv from 'dotenv'; dotenv.config();
 
 await migrateToLatest();
 
@@ -32,7 +31,7 @@ app.get('/health', async (req, res) => {
             collection_bookmarks,
         });
     } catch (error) {
-        console.error('Error fetching all tables:', error)
+        console.error('Error fetching all tables:', error);
         res.status(500).json({ error: 'Failed to fetch data for health check' });
     }
 });
