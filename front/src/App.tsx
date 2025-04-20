@@ -30,15 +30,16 @@ function App() {
                 </a>
             </div>
             <h1>ITIS4166 Final Project</h1>
-            <h2>Frontend: React + Vite</h2>
-            <h2>Backend: Express + PostgreSQL + Kysely</h2>
+            <h2>Frontend － React + Vite</h2>
+            <h2>Backend － Express + PostgreSQL + Kysely</h2>
             <h3>Deployed on Render</h3>
-            <div className="card">
-                <button onClick={checkHealth} style={{ backgroundColor: 'olivedrab' }}>
+            <hr style={{ margin: '1em' }}></hr>
+            <div>
+                <button onClick={checkHealth} style={{ backgroundColor: 'olivedrab', color: '#e2e2e2', margin: '1em' }}>
                     Run Health Check
                 </button>
                 {healthData && (
-                    <pre style={{ textAlign: 'left', marginTop: '12px', background: '#242424', padding: '1rem', border: '1pt solid #e2e2e2', borderRadius: '9px' }}>
+                    <pre style={{ textAlign: 'left', margin: '1em', padding: '1em', border: '1pt solid #e2e2e2', borderRadius: '1em' }}>
                         {JSON.stringify(healthData, null, 2)}
                     </pre>
                 )}
