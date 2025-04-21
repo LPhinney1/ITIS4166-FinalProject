@@ -1,40 +1,39 @@
-USERS
+--USERS
 GET /users              Get all users
 GET /users/:id          Get user by ID
 POST /users             Create a new user
 PUT /users              Update a user
 DELETE /users/:id       Delete a user
 
-BOOKMARKS
+--BOOKMARKS
 GET /bookmarks                      Get all Bookmarks
 GET /bookmarks/:id                  Get bookmark by ID
 POST /bookmarks                     Create a new bookmark
 PUT /bookmarks                      Update a bookmark
 DELETE /bookmarks/:id               Delete a bookmark
 
-TAGS
+--TAGS
 GET /tags                   Get all Tags
 GET /tags/:id               Get tag by ID
 POST /tags                  Create a new tag
 PUT /tags                   Update a tag
 DELETE /tags/:id            Delete a tag
 
-COLLECTIONS
+--COLLECTIONS
 GET /collections                    Get all Collections
 GET /collections/:id                Get collection by ID
 POST /collections                   Create a new collection
 PUT /collections                    Update a collection
 DELETE /collections/:id             Delete a collection
 
-BOOKMARK_TAGS
+--BOOKMARK_TAGS
 GET /bookmarks/:id/tags             Get tags for a bookmark
 GET /tags/:id/bookmarks             Get bookmarks with a tag
 POST /bookmarks/:id/tags            Add a tag to a bookmark
-DELETE /bookmarks/:bookmarkID/tags/:tagID   Remove tag from bookmark 
+DELETE /bookmarks/:bookmarkID/tags/:tagID               Remove tag from bookmark 
 
-
-COLLECTION_BOOKMARKS
-GET /collections/:id/bookmarks          Get bookmarks in a collection
-GET /bookmarks/:id/collections          Get collections for a bookmark
-POST /collections/:id/bookmarks         Add a bookmark to a collection
-DELETE /collections/:collectionID/bookmarks/:bookmarkID Remove bookmark from collection
+--COLLECTION_BOOKMARKS
+GET /collections/:id/bookmarks              Get bookmarks in a collection
+GET /bookmarks/:id/collections              Get collections for a bookmark
+POST /collections/:id/bookmarks             Add a bookmark to a collection
+DELETE /collections/:collectionID/bookmarks/:bookmarkID             Remove bookmark from collection
