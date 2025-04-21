@@ -53,18 +53,7 @@ bookmarkRouter.delete('/:id', async (req, res, next) => {
     }
 });
 
-bookmarkRouter.post('/:id/tags', async (req, res, next) => {
-    try {
-        const bookmarkId = Number(req.params.id);
-        const { tag_id } = req.body;
-        const result = await bookmarkServices.addTagToBookmark(bookmarkId, tag_id);
-        res.status(201).json(result);
-    } catch (err) {
-        res.status(400);
-        next(err);
-    }
-});
-
+//relationships
 bookmarkRouter.get('/:id/tags', async (req, res, next) => {
     try {
         const tags = await bookmarkServices.getTagsForBookmark(+req.params.id);
@@ -79,6 +68,29 @@ bookmarkRouter.get('/:id/collections', async (req, res, next) => {
     try {
         const collections = await bookmarkServices.getCollectionsForBookmark(+req.params.id);
         res.status(200).json(collections);
+    } catch (err) {
+        res.status(400);
+        next(err);
+    }
+});
+
+bookmarkRouter.post('/:id/tags', async (req, res, next) => {
+    try {
+        const bookmarkId = Number(req.params.id);
+        const { tag_id } = req.body;
+        const result = await bookmarkServices.addTagToBookmark(bookmarkId, tag_id);
+        res.status(201).json(result);
+    } catch (err) {
+        res.status(400);
+        next(err);
+    }
+});
+
+bookmarkRouter.delete('/:bookmarkId/tags/:tagId', async (req, res, next) => {
+    try {
+        const { bookmarkId, tagId } = req.params;
+        await bookmarkServices.removeTagFromBookmark(+bookmarkId, +tagId);
+        res.status(200).json({ msg: `Removed tag ${tagId} from bookmark ${bookmarkId}` });
     } catch (err) {
         res.status(400);
         next(err);

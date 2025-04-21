@@ -50,3 +50,7 @@ export async function getBookmarksInCollection(collectionId: number) {
     if (!exists) return Promise.reject(new Error('Collection not found'));
     return collectionRepositories.getBookmarksInCollection(collectionId);
 }
+
+export async function removeBookmarkFromCollection(collectionId: number, bookmarkId: number) {
+    return collectionRepositories.removeBookmarkFromCollection(collectionId, bookmarkId);
+}

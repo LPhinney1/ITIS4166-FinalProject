@@ -53,6 +53,7 @@ collectionRouter.delete('/:id', async (req, res, next) => {
     }
 });
 
+//relationships
 collectionRouter.post('/:id/bookmarks', async (req, res, next) => {
     try {
         const collectionId = Number(req.params.id);
@@ -69,6 +70,17 @@ collectionRouter.get('/:id/bookmarks', async (req, res, next) => {
     try {
         const bookmarks = await collectionServices.getBookmarksInCollection(+req.params.id);
         res.status(200).json(bookmarks);
+    } catch (err) {
+        res.status(400);
+        next(err);
+    }
+});
+
+collectionRouter.delete('/:collectionId/bookmarks/:bookmarkId', async (req, res, next) => {
+    try {
+        const { collectionId, bookmarkId } = req.params;
+        await collectionServices.removeBookmarkFromCollection(+collectionId, +bookmarkId);
+        res.status(200).json({ msg: `Removed bookmark ${bookmarkId} from collection ${collectionId}` });
     } catch (err) {
         res.status(400);
         next(err);

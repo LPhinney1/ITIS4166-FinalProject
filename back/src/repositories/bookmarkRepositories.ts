@@ -111,3 +111,13 @@ export async function getCollectionsForBookmark(bookmarkId: number) {
         .where('collection_bookmarks.bookmark_id', '=', bookmarkId)
         .execute();
 }
+
+export async function removeTagFromBookmark(bookmarkId: number, tagId: number) {
+    return await db.transaction().execute(async (trx) => {
+        return await trx
+            .deleteFrom('bookmark_tags')
+            .where('bookmark_id', '=', bookmarkId)
+            .where('tag_id', '=', tagId)
+            .executeTakeFirst();
+    });
+}

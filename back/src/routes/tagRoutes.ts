@@ -53,6 +53,7 @@ tagRouter.delete('/:id', async (req, res, next) => {
     }
 });
 
+//relationships
 tagRouter.get('/:id/bookmarks', async (req, res, next) => {
     try {
         const bookmarks = await tagServices.getBookmarksForTag(+req.params.id);

@@ -95,3 +95,13 @@ export async function getBookmarksInCollection(collectionId: number) {
         .where('collection_bookmarks.collection_id', '=', collectionId)
         .execute();
 }
+
+export async function removeBookmarkFromCollection(collectionId: number, bookmarkId: number) {
+    return await db.transaction().execute(async (trx) => {
+        return await trx
+            .deleteFrom('collection_bookmarks')
+            .where('collection_id', '=', collectionId)
+            .where('bookmark_id', '=', bookmarkId)
+            .executeTakeFirst();
+    });
+}

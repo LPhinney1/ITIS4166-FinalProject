@@ -59,3 +59,8 @@ export async function getCollectionsForBookmark(bookmarkId: number) {
     if (!exists) return Promise.reject(new Error('Bookmark not found'));
     return bookmarkRepositories.getCollectionsForBookmark(bookmarkId);
 }
+
+export async function removeTagFromBookmark(bookmarkId: number, tagId: number) {
+    return bookmarkRepositories.removeTagFromBookmark(bookmarkId, tagId);
+}
+

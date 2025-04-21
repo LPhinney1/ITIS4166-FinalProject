@@ -27,11 +27,14 @@ PUT /collections                    Update a collection
 DELETE /collections/:id             Delete a collection
 
 BOOKMARK_TAGS
-    POST /bookmarks/:id/tags            Add a tag to a bookmark
-    GET /bookmarks/:id/tags             Get tags for a bookmark
-    GET /tags/:id/bookmarks     Get bookmarks with a tag
+GET /bookmarks/:id/tags             Get tags for a bookmark
+GET /tags/:id/bookmarks             Get bookmarks with a tag
+POST /bookmarks/:id/tags            Add a tag to a bookmark
+DELETE /bookmarks/:bookmarkID/tags/:tagID   Remove tag from bookmark 
+
 
 COLLECTION_BOOKMARKS
-    POST /collections/:id/bookmarks     Add a bookmark to a collection
-    GET /collections/:id/bookmarks      Get bookmarks in a collection
-    GET /bookmarks/:id/collections      Get collections for a bookmark
+GET /collections/:id/bookmarks          Get bookmarks in a collection
+GET /bookmarks/:id/collections          Get collections for a bookmark
+POST /collections/:id/bookmarks         Add a bookmark to a collection
+DELETE /collections/:collectionID/bookmarks/:bookmarkID Remove bookmark from collection
