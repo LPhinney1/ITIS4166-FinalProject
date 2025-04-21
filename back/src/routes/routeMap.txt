@@ -11,9 +11,6 @@ GET /bookmarks/:id                  Get bookmark by ID
 POST /bookmarks                     Create a new bookmark
 PUT /bookmarks                      Update a bookmark
 DELETE /bookmarks/:id               Delete a bookmark
-POST /bookmarks/:id/tags            Add a tag to a bookmark
-GET /bookmarks/:id/tags             Get tags for a bookmark
-GET /bookmarks/:id/collections      Get collections for a bookmark
 
 TAGS
 GET /tags                   Get all Tags
@@ -21,7 +18,6 @@ GET /tags/:id               Get tag by ID
 POST /tags                  Create a new tag
 PUT /tags                   Update a tag
 DELETE /tags/:id            Delete a tag
-GET /tags/:id/bookmarks     Get bookmarks with a tag
 
 COLLECTIONS
 GET /collections                    Get all Collections
@@ -29,5 +25,13 @@ GET /collections/:id                Get collection by ID
 POST /collections                   Create a new collection
 PUT /collections                    Update a collection
 DELETE /collections/:id             Delete a collection
-POST /collections/:id/bookmarks     Add a bookmark to a collection
-GET /collections/:id/bookmarks      Get bookmarks in a collection
+
+BOOKMARK_TAGS
+    POST /bookmarks/:id/tags            Add a tag to a bookmark
+    GET /bookmarks/:id/tags             Get tags for a bookmark
+    GET /tags/:id/bookmarks     Get bookmarks with a tag
+
+COLLECTION_BOOKMARKS
+    POST /collections/:id/bookmarks     Add a bookmark to a collection
+    GET /collections/:id/bookmarks      Get bookmarks in a collection
+    GET /bookmarks/:id/collections      Get collections for a bookmark
