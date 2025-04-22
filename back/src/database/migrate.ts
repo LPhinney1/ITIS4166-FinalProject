@@ -18,9 +18,9 @@ export async function migrateToLatest() {
     let migrationErrored = false;
     results?.forEach((it) => {
         if (it.status === 'Success') {
-            console.log(`Migration "${it.migrationName}": \x1b[32mSUCCESS\x1b[0m\n`);
+            console.log(`Database migration "${it.migrationName}": \x1b[32mSUCCESS\x1b[0m\n`);
         } else if (it.status === 'Error') {
-            console.error(`Migration "${it.migrationName}": \x1b[31mERROR\x1b[0m`);
+            console.error(`Database migration "${it.migrationName}": \x1b[31mERROR\x1b[0m`);
             migrationErrored = true;
         }
     });

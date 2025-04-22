@@ -12,7 +12,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .execute();
-    console.log('Created table: users');
+    console.log('Initialized: users');
 
     await db.schema
         .createTable('bookmarks')
@@ -25,7 +25,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .execute();
-    console.log('Created table: bookmarks');
+    console.log('Initialized: bookmarks');
 
     await db.schema
         .createTable('tags')
@@ -36,7 +36,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .execute();
-    console.log('Created table: tags');
+    console.log('Initialized: tags');
 
     await db.schema
         .createTable('collections')
@@ -48,7 +48,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .execute();
-    console.log('Created table: collections');
+    console.log('Initialized: collections');
 
     await db.schema
         .createTable('bookmark_tags')
@@ -58,7 +58,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addPrimaryKeyConstraint('bookmark_tags_pk', ['bookmark_id', 'tag_id'])
         .execute();
-    console.log('Created table: bookmark_tags');
+    console.log('Initialized: bookmark_tags');
 
     await db.schema
         .createTable('collection_bookmarks')
@@ -68,7 +68,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addPrimaryKeyConstraint('collection_bookmarks_pk', ['collection_id', 'bookmark_id'])
         .execute();
-    console.log('Created table: collection_bookmarks');
+    console.log('Initialized: collection_bookmarks');
 }
 
 // eslint-disable-next-line
