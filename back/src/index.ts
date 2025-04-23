@@ -16,13 +16,22 @@ app.use(express.json());
 
 app.get('/health', async (req, res) => {
     try {
+        const startTimer = Date.now();
+
         const users = await db.selectFrom('users').selectAll().execute();
         const bookmarks = await db.selectFrom('bookmarks').selectAll().execute();
         const tags = await db.selectFrom('tags').selectAll().execute();
         const collections = await db.selectFrom('collections').selectAll().execute();
         const bookmark_tags = await db.selectFrom('bookmark_tags').selectAll().execute();
         const collection_bookmarks = await db.selectFrom('collection_bookmarks').selectAll().execute();
+
+        const endTimer = Date.now();
+        const durationMilliseconds = endTimer - startTimer;
+        const durationSeconds = durationMilliseconds / 1000;
+        const healthCheckMessage = `Completed in ${durationSeconds.toFixed(2)} seconds`;
+
         res.status(200).json({
+            msg: healthCheckMessage,
             users,
             bookmarks,
             tags,
