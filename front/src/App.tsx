@@ -8,14 +8,18 @@ function App() {
     const baseUrl = import.meta.env.VITE_URL
 
     const checkHealth = async () => {
+        const startTime = performance.now()
         try {
             const res = await fetch(`${baseUrl}/health`)
             const data = await res.json()
-            console.log('Health Check Data:', data)
+            const endTime = performance.now()
+            console.log(`Health check took ${(endTime - startTime).toFixed(2)} milliseconds`)
             setHealthData(data)
         } catch (error) {
+            const endTime = performance.now()
             console.error('Health check failed:', error)
-            setHealthData({ error: 'Failed to fetch health data' })
+            console.log(`Health check failed in ${(endTime - startTime).toFixed(2)} milliseconds`)
+            setHealthData({ error: 'Failed to fetch health data from API' })
         }
     }
 
@@ -49,4 +53,3 @@ function App() {
 }
 
 export default App
-
