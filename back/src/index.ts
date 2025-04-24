@@ -6,10 +6,11 @@ import bookmarkRouter from './routes/bookmarkRoutes.js';
 import tagRouter from './routes/tagRoutes.js';
 import collectionRouter from './routes/collectionRoutes.js';
 import { db } from './database/db.js';
-import * as dotenv from 'dotenv'; dotenv.config();
+import { verifyAuthToken } from './services/middlewareServices.js';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 await migrateToLatest();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -36,7 +37,27 @@ app.get('/health', async (req, res) => {
     }
 });
 
-app.use('/api/users', userRouter);
+app.use('/api/users', userRouter); //BEFORE MIDDLEWARE AUTHORIZATION
+
+app.use(async (req, res, next) => {
+    const authHeader = req.get('Authorization');
+    if (!authHeader) {
+        res.sendStatus(401);
+        return;
+    }
+    const [scheme, token] = authHeader.split(' ');
+    if (scheme !== 'Bearer' || !token) {
+        res.sendStatus(401);
+        return;
+    }
+    try {
+        res.locals.userId = await verifyAuthToken(token);
+        next();
+    } catch {
+        res.sendStatus(401);
+    }
+});
+
 app.use('/api/bookmarks', bookmarkRouter);
 app.use('/api/tags', tagRouter);
 app.use('/api/collections', collectionRouter);
