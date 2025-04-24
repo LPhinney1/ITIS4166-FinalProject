@@ -19,6 +19,7 @@ export async function getAllUsers(): Promise<Partial<User[]>> {
     for (const user of users) allUsers.push(<User>user);
     return allUsers;
 }
+
 export async function getUserById(id: number): Promise<Partial<User>> {
     return await db
         .selectFrom('users')
@@ -65,4 +66,13 @@ export async function deleteUser(id: number) {
     return await db.transaction().execute(async (trx) => {
         return await trx.deleteFrom('users').where('id', '=', id).executeTakeFirst();
     });
+}
+
+//login
+export async function getUserByUsername(username: string): Promise<Partial<User>> {
+    return await db
+        .selectFrom('users')
+        .select(['id', 'username', 'email', 'password', 'created_at', 'updated_at'])
+        .where('username', '=', username)
+        .executeTakeFirstOrThrow();
 }

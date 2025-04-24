@@ -52,4 +52,19 @@ userRouter.delete('/:id', async (req, res, next) => {
         next(err);
     }
 });
+
+userRouter.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+    if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
+        res.sendStatus(401);
+        return;
+    }
+    try {
+        const token = await userServices.login(username, password);
+        res.status(200).json({ token });
+    } catch (err) {
+        res.sendStatus(401);
+        next(err);
+    }
+});
 export default userRouter;
