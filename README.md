@@ -8,6 +8,7 @@ Local Hosting Instructions:
     docker compose up -d
     npm i 
     npm run dev    
-    cd ../front/
+    
+    cd front/
     npm i
     npm run dev
