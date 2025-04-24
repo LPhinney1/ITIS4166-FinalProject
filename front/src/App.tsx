@@ -12,13 +12,11 @@ function App() {
         try {
             const res = await fetch(`${baseUrl}/health`)
             const data = await res.json()
-            const endTime = performance.now()
-            console.log(`Health check took ${(endTime - startTime).toFixed(2)} milliseconds`)
+            console.log(`Health check took ${((performance.now() - startTime) / 1000).toFixed(2)} seconds`);
             setHealthData(data)
         } catch (error) {
-            const endTime = performance.now()
             console.error('Health check failed:', error)
-            console.log(`Health check failed in ${(endTime - startTime).toFixed(2)} milliseconds`)
+            console.log(`Health check failed in ${((performance.now() - startTime) / 1000).toFixed(2)} seconds`);
             setHealthData({ error: 'Failed to fetch health data from API' })
         }
     }
