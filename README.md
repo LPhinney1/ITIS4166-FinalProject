@@ -1,5 +1,7 @@
 DEPLOYED @ https://itis4166-04.onrender.com
 
+API @ https://bookmark-api-pm6u.onrender.com/health
+
 Project Requirements Overview
 
 You are to form a team of 2-3 engineers with the task of creating a SaaS (Software as a Service) web application. Your task is to create an application where users can create accounts, log in, and interact with your application in some way. We are very flexible with the actual application and you have the freedom to choose to build whatever you want to. You could try to recreate a more general social media forum like reddit, imgur, etc. Alternatively, you could have an application with a more specific domain, such as an application which allows computer science students to make posts offering or looking for tutoring services, a role playing game campaign creator, workout tracker / social media, dieting application, etc.
