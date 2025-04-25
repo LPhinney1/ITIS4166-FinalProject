@@ -40,21 +40,22 @@ app.get('/health', async (req, res) => {
 app.use('/api/users', userRouter); //BEFORE MIDDLEWARE AUTHORIZATION
 
 app.use(async (req, res, next) => {
-    const authHeader = req.get('Authorization');
+    const authHeader = req.get('authorization');
     if (!authHeader) {
         res.sendStatus(401);
         return;
     }
-    const [scheme, token] = authHeader.split(' ');
-    if (scheme !== 'Bearer' || !token) {
+    const [bearer, token] = authHeader.split(' ');
+    if (bearer !== 'Bearer' || !token) {
         res.sendStatus(401);
         return;
     }
     try {
         res.locals.userId = await verifyAuthToken(token);
         next();
-    } catch {
+    } catch(err) {
         res.sendStatus(401);
+        next(err);
     }
 });
 
@@ -62,5 +63,5 @@ app.use('/api/bookmarks', bookmarkRouter);
 app.use('/api/tags', tagRouter);
 app.use('/api/collections', collectionRouter);
 
-const HOST = process.env.HOST;
-app.listen(3000, () => console.log(`Backend running @\n\x1b[35mhttp://${HOST}:3000/\x1b[0m`));
+const host = process.env.HOST;
+app.listen(3000, () => console.log(`Backend running @\n\x1b[35mhttp://${host}:3000/\x1b[0m`));
