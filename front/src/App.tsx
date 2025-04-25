@@ -33,7 +33,7 @@ function App() {
             </div>
             <h1>ITIS4166 Final Project</h1>
             <h2>Frontend － React + Vite</h2>
-            <h2>Backend － Express + PostgreSQL + Kysely</h2>
+            <h2><a href="https://bookmark-api-pm6u.onrender.com/health" target='_blank'>Backend API</a> － Express + PostgreSQL + Kysely</h2>
             <h3>Deployed on Render</h3>
             <hr style={{ margin: '1em' }}></hr>
             <div>
