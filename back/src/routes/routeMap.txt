@@ -37,3 +37,7 @@ GET /collections/:id/bookmarks              Get bookmarks in a collection
 GET /bookmarks/:id/collections              Get collections for a bookmark
 POST /collections/:id/bookmarks             Add a bookmark to a collection
 DELETE /collections/:collectionID/bookmarks/:bookmarkID             Remove bookmark from collection
+
+--LOGIN
+POST /users/login               Post USERNAME & PASSWORD;   Returns a JWT
+MUST USE HEADER FORMAT --> key: 'authorization', value: 'Bearer token'
