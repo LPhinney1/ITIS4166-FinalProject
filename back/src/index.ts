@@ -37,7 +37,7 @@ app.get('/health', async (req, res) => {
     }
 });
 
-app.use('/api/users', userRouter); //BEFORE MIDDLEWARE AUTHORIZATION
+app.use('/api/users', userRouter); //MUST BE BEFORE MIDDLEWARE AUTHORIZATION
 
 app.use(async (req, res, next) => {
     const authHeader = req.get('authorization');
@@ -53,7 +53,7 @@ app.use(async (req, res, next) => {
     try {
         res.locals.userId = await verifyAuthToken(token);
         next();
-    } catch(err) {
+    } catch (err) {
         res.sendStatus(401);
         next(err);
     }
