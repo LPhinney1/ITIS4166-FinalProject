@@ -36,11 +36,7 @@ export function UserProvider({ children }: { children: React.ReactNode }): JSX.E
         localStorage.removeItem('authorization');
     }
 
-    return (
-        <UserContext.Provider value={{ token, login, logout, isLoading }}>
-            {children}
-        </UserContext.Provider>
-    );
+    return <UserContext.Provider value={{ token, login, logout, isLoading }}>{children}</UserContext.Provider>;
 }
 
 export function useUser(): UserContextType {

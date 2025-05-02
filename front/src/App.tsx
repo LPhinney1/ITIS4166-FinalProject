@@ -66,7 +66,7 @@ function App() {
                     onClick={checkHealth}
                     style={{
                         backgroundColor: 'olivedrab',
-                        color: '#fff',
+                        color: '#f5f5f5',
                         padding: '0.5em 1em',
                     }}>
                     Run Health Check
