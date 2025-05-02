@@ -14,28 +14,33 @@ export function UserProvider({ children }: { children: React.ReactNode }): JSX.E
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const localStorageToken = localStorage.getItem('token');
-        if (!localStorageToken) {
+        const storedValue = localStorage.getItem('authorization');
+        if (!storedValue || !storedValue.startsWith('Bearer ')) {
             setIsLoading(false);
             return;
         }
-        setToken(localStorageToken);
+        const tokenFromStorage = storedValue.slice(7); // Remove 'Bearer ' prefix
+        setToken(tokenFromStorage);
         setIsLoading(false);
     }, []);
 
     function login(token: string): void {
         setToken(token);
         if (token) {
-            localStorage.setItem('token', token);
+            localStorage.setItem('authorization', `Bearer ${token}`);
         }
     }
 
     function logout(): void {
         setToken(null);
-        localStorage.removeItem('token');
+        localStorage.removeItem('authorization');
     }
 
-    return <UserContext.Provider value={{ token, login, logout, isLoading }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ token, login, logout, isLoading }}>
+            {children}
+        </UserContext.Provider>
+    );
 }
 
 export function useUser(): UserContextType {
