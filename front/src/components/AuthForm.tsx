@@ -10,6 +10,7 @@ function AuthForm({ onLogin }: Props) {
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const baseUrl = import.meta.env.VITE_URL;
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -23,7 +24,7 @@ function AuthForm({ onLogin }: Props) {
         const endpoint = isRegistering ? '/api/users' : '/api/users/login';
         const body = isRegistering ? { username, email, password } : { username, password };
 
-        const res = await fetch(`http://localhost:3000${endpoint}`, {
+        const res = await fetch(`${baseUrl}${endpoint}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
