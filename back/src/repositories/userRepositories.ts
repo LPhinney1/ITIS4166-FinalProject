@@ -1,5 +1,4 @@
 import { db } from '../database/db.js';
-import { randomUUID } from 'node:crypto';
 
 export type User = {
     id: number;
@@ -29,7 +28,7 @@ export async function getUserById(id: number): Promise<Partial<User>> {
         .executeTakeFirstOrThrow();
 }
 
-export async function createUser(user: { username: string; email: string }): Promise<User> {
+export async function createUser(user: { username: string; email: string; password: string }): Promise<User> {
     return await db.transaction().execute(async (trx) => {
         return (await trx
             .insertInto('users')
@@ -37,9 +36,9 @@ export async function createUser(user: { username: string; email: string }): Pro
             .values({
                 username: user.username,
                 email: user.email,
-                password: randomUUID(),
-                created_at: new Date(Date.now()),
-                updated_at: new Date(Date.now()),
+                password: user.password,
+                created_at: new Date(),
+                updated_at: new Date(),
             })
             .returning(['id', 'username', 'email', 'password', 'created_at', 'updated_at'])
             .executeTakeFirstOrThrow()) as User;

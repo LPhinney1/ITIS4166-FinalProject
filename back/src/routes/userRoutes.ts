@@ -25,7 +25,11 @@ userRouter.get('/:id', async (req, res, next) => {
 
 userRouter.post('/', async (req, res, next) => {
     try {
-        const user = await userServices.createUser(req.body);
+        const { username, email, password } = req.body;
+        if (!username || !email || !password) {
+            res.status(400).json({ error: 'username, email, and password are required' });
+        }
+        const user = await userServices.createUser({ username, email, password });
         res.status(201).json(user);
     } catch (err) {
         res.status(400);
