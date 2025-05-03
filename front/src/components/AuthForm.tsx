@@ -10,11 +10,13 @@ function AuthForm({ onLogin }: Props) {
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const baseUrl = import.meta.env.VITE_URL;
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setErrorMsg('');
+        setSuccessMsg('');
 
         if (!username || !password || (isRegistering && !email)) {
             setErrorMsg('All fields are required.');
@@ -37,6 +39,12 @@ function AuthForm({ onLogin }: Props) {
         }
 
         const data = await res.json();
+
+        if (isRegistering) {
+            setSuccessMsg('Success! Return to login form.');
+            return;
+        }
+
         onLogin(data.token);
     }
 
@@ -44,11 +52,12 @@ function AuthForm({ onLogin }: Props) {
         <form
             onSubmit={handleSubmit}
             style={{
-                maxWidth: '400px',
-                margin: '1em auto',
+                maxWidth: '500px',
+                margin: 'auto auto',
                 textAlign: 'left',
             }}>
-            <h2>{isRegistering ? 'Register' : 'Login'}</h2>
+            <hr></hr>
+            <h3 style={{ textAlign: "center" }}>{isRegistering ? 'Register' : 'Login'}</h3>
 
             <label style={{ display: 'block', marginBottom: '0.5em' }}>
                 Username:
@@ -97,7 +106,11 @@ function AuthForm({ onLogin }: Props) {
                 />
             </label>
 
-            {errorMsg && <div style={{ color: 'red', marginBottom: '1em' }}>{errorMsg}</div>}
+            {(errorMsg || successMsg) && (
+                <div style={{ marginBottom: '1em', color: errorMsg ? 'red' : 'green' }}>
+                    {errorMsg || successMsg}
+                </div>
+            )}
 
             <button type="submit" style={{ padding: '0.5em 1em', marginRight: '1em' }}>
                 {isRegistering ? 'Register' : 'Login'}
