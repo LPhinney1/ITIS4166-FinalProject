@@ -30,16 +30,17 @@ function App() {
 
     if (!token) {
         return (
-            <div style={{ padding: '2em', maxWidth: '500px', margin: '0 auto' }}>
+            <div style={{ padding: '1em', maxWidth: '600px', margin: 'auto auto' }}>
                 <h2>Please log in or register to access the app.</h2>
                 <AuthForm onLogin={login} />
+                <em style={{ textAlign: "center", fontSize: "0.9em" }}>Backend may take ~20 seconds to spin up if inactive for long period</em>
             </div>
         );
     }
 
     return (
         <div style={{ padding: '1em', textAlign: 'center' }}>
-            <button onClick={logout} style={{ float: 'right', marginRight: '1em' }}>
+            <button onClick={logout} style={{ margin: '1em' }}>
                 Logout
             </button>
             <div>
