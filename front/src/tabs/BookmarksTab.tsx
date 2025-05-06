@@ -22,48 +22,40 @@ const BookmarksTab = () => {
 
     return (
         <div className="bookmarks-tab">
-            <div className="tab-actions">
-                <button className="btn btn-primary add-bookmark-btn" onClick={handleAddBookmark}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Add Bookmark
-                </button>
-            </div>
-
             {bookmarks.length > 0 ? (
-                <div className="bookmarks-grid">
-                    {bookmarks.map((bookmark) => (
-                        <div className="bookmark-card" key={bookmark.id}>
-                            <div className="bookmark-thumbnail">
-                                <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
-                            </div>
-                            <div className="bookmark-content">
-                                <div className="bookmark-title">
-                                    <div className="favicon">
-                                        <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
-                                    </div>
-                                    <h3>{bookmark.title}</h3>
+                <>
+                    <div className="tab-actions">
+                        <button className="btn btn-primary add-bookmark-btn" onClick={handleAddBookmark}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Bookmark
+                        </button>
+                    </div>
+                    <div className="bookmarks-grid">
+                        {bookmarks.map((bookmark) => (
+                            <div className="bookmark-card" key={bookmark.id}>
+                                <div className="bookmark-thumbnail">
+                                    <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
                                 </div>
-                                <p className="bookmark-description">{bookmark.description}</p>
-                                <div className="bookmark-meta">
-                                    <div className="bookmark-date">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        <span>{bookmark.createdAt}</span>
+                                <div className="bookmark-content">
+                                    <div className="bookmark-title">
+                                        <div className="favicon">
+                                            <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
+                                        </div>
+                                        <h3>{bookmark.title}</h3>
                                     </div>
-                                    <div className="bookmark-actions">
-                                        <button className="action-btn edit">
+                                    <p className="bookmark-description">{bookmark.description}</p>
+                                    <div className="bookmark-meta">
+                                        <div className="bookmark-date">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
@@ -72,51 +64,53 @@ const BookmarksTab = () => {
                                                 strokeWidth="2"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
                                             </svg>
-                                        </button>
-                                        <button className="action-btn delete">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                            </svg>
-                                        </button>
+                                            <span>{bookmark.createdAt}</span>
+                                        </div>
+                                        <div className="bookmark-actions">
+                                            <button className="action-btn edit">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button className="action-btn delete">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                </>
             ) : (
-                <div className="empty-state">
-                    <svg
-                        className="empty-state-icon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <h3 className="empty-state-title">No bookmarks yet</h3>
-                    <p className="empty-state-description">Start adding bookmarks to organize your favorite websites.</p>
-                    <button className="btn btn-primary" onClick={handleAddBookmark}>
-                        Add Your First Bookmark
-                    </button>
+                <div className="empty-bookmarks-container" onClick={handleAddBookmark}>
+                    <div className="big-plus-icon">+</div>
+                    <div className="add-bookmark-text">Add Bookmark</div>
                 </div>
             )}
 
-            {/* Add Bookmark Modal will be implemented here */}
+            {/* Add Bookmark Modal */}
             {showAddModal && (
                 <div className="modal-backdrop active">
                     <div className="modal">
