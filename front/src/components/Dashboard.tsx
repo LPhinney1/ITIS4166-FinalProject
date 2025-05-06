@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
+import CollectionsTab from '../tabs/CollectionsTab';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -153,14 +154,7 @@ const Dashboard = () => {
                     {activeTab === 'bookmarks' && <BookmarksTab />}
 
                     {/* Collections Tab */}
-                    {activeTab === 'collections' && (
-                        <div className="collections-tab">
-                            <div className="empty-bookmarks-container">
-                                <div className="big-plus-icon">+</div>
-                                <div className="add-bookmark-text">Create Collection</div>
-                            </div>
-                        </div>
-                    )}
+                    {activeTab === 'collections' && <CollectionsTab />}
 
                     {/* Tags Tab */}
                     {activeTab === 'tags' && (
