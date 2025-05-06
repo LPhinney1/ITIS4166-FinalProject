@@ -8,7 +8,6 @@ type Props = {
 function AuthForm({ onLogin }: Props) {
     const [activeTab, setActiveTab] = useState('login');
     const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -33,9 +32,6 @@ function AuthForm({ onLogin }: Props) {
 
     const validateRegister = () => {
         const newErrors: Record<string, string> = {};
-        if (!name.trim()) {
-            newErrors.name = 'Full name is required';
-        }
         if (!username.trim()) {
             newErrors.username = 'Username is required';
         }
@@ -96,7 +92,6 @@ function AuthForm({ onLogin }: Props) {
 
             setRegisterSuccess('Registration successful! You can now log in.');
             // Reset form
-            setName('');
             setUsername('');
             setPassword('');
             setConfirmPassword('');
@@ -215,21 +210,6 @@ function AuthForm({ onLogin }: Props) {
                     )}
 
                     <form onSubmit={handleRegisterSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="register-name" className="form-label">
-                                Full Name
-                            </label>
-                            <input
-                                type="text"
-                                id="register-name"
-                                className="form-control"
-                                placeholder="John Smith"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                            />
-                            {errors.name && <div className="form-error active">{errors.name}</div>}
-                        </div>
                         <div className="form-group">
                             <label htmlFor="register-username" className="form-label">
                                 Username
