@@ -293,7 +293,7 @@ body {
     background-color: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
 .empty-state-icon {
@@ -318,19 +318,7 @@ body {
 
 /* Big plus sign for empty bookmarks - normalized version */
 .empty-bookmarks-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary-color);
-    border-radius: var(--border-radius);
-    color: white;
-    width: 100%;
-    height: 300px;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background-color 0.2s;
-    padding: 2rem;
+    display: none !important;
 }
 
 .empty-bookmarks-container:hover {
@@ -348,7 +336,139 @@ body {
     font-weight: 500;
 }
 
-/* Add these CSS rules to your Dashboard.css file for the Collections Tab */
+.add-button-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.5rem 0;
+}
+
+.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6366f1; /* Purple/indigo color from the image */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-button:hover {
+    background-color: #4f46e5; /* Darker shade on hover */
+}
+
+.plus-icon {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Section header with title and action button */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-action {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s;
+}
+
+.section-action:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Dashboard grid layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Add card for dashboard */
+.add-card {
+    background-color: var(--gray-100);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--border-radius);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-card:hover {
+    background-color: var(--gray-200);
+    border-color: var(--primary-color);
+}
+
+.add-card-content {
+    text-align: center;
+    color: var(--gray-600);
+}
+
+.add-icon {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    color: var(--gray-500);
+}
+
+.add-card:hover .add-icon {
+    color: var(--primary-color);
+}
+
+/* Loading state */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+/* Make cards on the dashboard slightly smaller */
+.dashboard-grid .bookmark-card,
+.dashboard-grid .collection-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-grid .bookmark-thumbnail {
+    height: 100px;
+}
+
+.dashboard-grid .bookmark-content,
+.dashboard-grid .collection-card > :not(.collection-header) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-grid .bookmark-description,
+.dashboard-grid .collection-description {
+    flex: 1;
+    margin-bottom: 1rem;
+}
 
 .bookmarks-grid,
 .collections-grid {
