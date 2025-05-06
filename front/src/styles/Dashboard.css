@@ -60,7 +60,7 @@ body {
     z-index: 10;
     transition: transform 0.3s ease;
     overflow-y: auto;
-    padding-bottom: 1rem; /* Add padding to prevent content from being cut off */
+    padding-bottom: 1rem;
 }
 
 .sidebar-header {
@@ -172,6 +172,8 @@ body {
     margin-left: 250px;
     padding: 1.5rem;
     width: calc(100% - 250px);
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .content-header {
@@ -312,6 +314,38 @@ body {
     color: var(--gray-500);
     max-width: 400px;
     margin-bottom: 1.5rem;
+}
+
+/* Big plus sign for empty bookmarks - normalized version */
+.empty-bookmarks-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    color: white;
+    width: 100%;
+    height: 300px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+    padding: 2rem;
+}
+
+.empty-bookmarks-container:hover {
+    background-color: var(--primary-dark);
+}
+
+.big-plus-icon {
+    font-size: 64px;
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+
+.add-bookmark-text {
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 /* Mobile Menu Button */
