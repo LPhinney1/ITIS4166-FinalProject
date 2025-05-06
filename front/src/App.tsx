@@ -1,11 +1,11 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
 import { useUser } from './context/UseUser';
 import './App.css';
 
 function App() {
-    const { token, isLoading, login, logout } = useUser();
+    const { token, isLoading, login } = useUser();
 
     if (isLoading) {
         return <div className="loading-screen">Loading...</div>;
