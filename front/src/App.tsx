@@ -1,17 +1,15 @@
-import { useState } from 'react';
 import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
 import { useUser } from './context/UseUser';
 import './App.css';
 
 function App() {
-    const { token, isLoading, login, logout } = useUser();
+    const { token, isLoading, login } = useUser();
 
     if (isLoading) {
         return <div className="loading-screen">Loading...</div>;
     }
 
-    // Show the login form if not authenticated
     if (!token) {
         return (
             <div style={{ padding: '2em', maxWidth: '500px', margin: '0 auto' }}>
@@ -21,7 +19,6 @@ function App() {
         );
     }
 
-    // Show the dashboard if authenticated
     return <Dashboard />;
 }
 
