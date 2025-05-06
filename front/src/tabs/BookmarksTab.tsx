@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { useDataRefresh } from '../context/DataRefreshContext';
 
 // Types for our bookmarks
 interface Bookmark {
@@ -32,6 +33,9 @@ interface Collection {
 }
 
 const BookmarksTab = () => {
+    // Access the refresh context
+    const { bookmarksVersion, refreshBookmarks, refreshCollections } = useDataRefresh();
+
     // State for bookmarks and loading state
     const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
     const [collections, setCollections] = useState<Collection[]>([]);
@@ -51,11 +55,11 @@ const BookmarksTab = () => {
     const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
     const [editTags, setEditTags] = useState('');
 
-    // Fetch bookmarks and collections on component mount
+    // Fetch bookmarks and collections when component mounts or when bookmarksVersion changes
     useEffect(() => {
         fetchBookmarks();
         fetchCollections();
-    }, []);
+    }, [bookmarksVersion]);
 
     // Function to fetch bookmarks from API
     const fetchBookmarks = async () => {
@@ -123,6 +127,9 @@ const BookmarksTab = () => {
             setError(null);
             await api.collections.addBookmark(selectedCollectionId, selectedBookmarkId);
             setShowCollectionModal(false);
+
+            // Refresh collections to update bookmark count
+            refreshCollections();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error adding bookmark to collection:', err);
@@ -214,8 +221,12 @@ const BookmarksTab = () => {
                 }
             }
 
+            // Update local state
             setBookmarks([...bookmarks, response]);
             setShowAddModal(false);
+
+            // Refresh data globally
+            refreshBookmarks();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error creating bookmark:', err);
@@ -294,6 +305,9 @@ const BookmarksTab = () => {
             setShowEditModal(false);
             setEditingBookmark(null);
             setEditTags('');
+
+            // Refresh data globally
+            refreshBookmarks();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error updating bookmark:', err);
@@ -308,6 +322,11 @@ const BookmarksTab = () => {
                 setError(null);
                 await api.bookmarks.delete(id);
                 setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id));
+
+                // Refresh data globally
+                refreshBookmarks();
+                // Also refresh collections as bookmark counts may change
+                refreshCollections();
             } catch (err) {
                 const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
                 console.error('Error deleting bookmark:', err);
@@ -330,88 +349,34 @@ const BookmarksTab = () => {
         <div className="bookmarks-tab">
             {error && <div className="error-message">{error}</div>}
 
+            {/* Always show the Add Bookmark button at the top */}
+            <div className="add-button-container">
+                <button className="add-button" onClick={handleAddBookmark}>
+                    <span className="plus-icon">+</span> Add Bookmark
+                </button>
+            </div>
+
             {bookmarks.length > 0 ? (
-                <>
-                    <div className="tab-actions">
-                        <button className="btn btn-primary add-bookmark-btn" onClick={handleAddBookmark}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            <span>Add Bookmark</span>
-                        </button>
-                    </div>
-                    <div className="bookmarks-grid">
-                        {bookmarks.map((bookmark) => (
-                            <div className="bookmark-card" key={bookmark.id}>
-                                <div className="bookmark-thumbnail">
-                                    <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
-                                </div>
-                                <div className="bookmark-content">
-                                    <div className="bookmark-header">
-                                        <div className="bookmark-title">
-                                            <div className="favicon">
-                                                <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
-                                            </div>
-                                            <h3>
-                                                <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-                                                    {bookmark.title}
-                                                </a>
-                                            </h3>
+                <div className="bookmarks-grid">
+                    {bookmarks.map((bookmark) => (
+                        <div className="bookmark-card" key={bookmark.id}>
+                            <div className="bookmark-thumbnail">
+                                <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
+                            </div>
+                            <div className="bookmark-content">
+                                <div className="bookmark-header">
+                                    <div className="bookmark-title">
+                                        <div className="favicon">
+                                            <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
                                         </div>
-                                        <div className="bookmark-actions">
-                                            <button className="action-btn add-to-collection" title="Add to Collection" onClick={() => handleAddToCollection(bookmark.id)}>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round">
-                                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                                                    <line x1="12" y1="11" x2="12" y2="17"></line>
-                                                    <line x1="9" y1="14" x2="15" y2="14"></line>
-                                                </svg>
-                                            </button>
-                                            <button className="action-btn edit" title="Edit Bookmark" onClick={() => handleEditBookmark(bookmark)}>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round">
-                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                                </svg>
-                                            </button>
-                                            <button className="action-btn delete" title="Delete Bookmark" onClick={() => deleteBookmark(bookmark.id)}>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round">
-                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
+                                        <h3>
+                                            <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+                                                {bookmark.title}
+                                            </a>
+                                        </h3>
                                     </div>
-                                    <p className="bookmark-description">{bookmark.description}</p>
-                                    <div className="bookmark-meta">
-                                        <div className="bookmark-date">
+                                    <div className="bookmark-actions">
+                                        <button className="action-btn add-to-collection" title="Add to Collection" onClick={() => handleAddToCollection(bookmark.id)}>
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
@@ -420,21 +385,75 @@ const BookmarksTab = () => {
                                                 strokeWidth="2"
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                                <line x1="12" y1="11" x2="12" y2="17"></line>
+                                                <line x1="9" y1="14" x2="15" y2="14"></line>
                                             </svg>
-                                            <span>{formatDate(bookmark.created_at)}</span>
-                                        </div>
+                                        </button>
+                                        <button className="action-btn edit" title="Edit Bookmark" onClick={() => handleEditBookmark(bookmark)}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button className="action-btn delete" title="Delete Bookmark" onClick={() => deleteBookmark(bookmark.id)}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p className="bookmark-description">{bookmark.description}</p>
+                                <div className="bookmark-meta">
+                                    <div className="bookmark-date">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        <span>{formatDate(bookmark.created_at)}</span>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </>
+                        </div>
+                    ))}
+                </div>
             ) : (
-                <div className="empty-bookmarks-container" onClick={handleAddBookmark}>
-                    <div className="big-plus-icon">+</div>
-                    <div className="add-bookmark-text">Add Bookmark</div>
+                <div className="empty-state">
+                    <svg
+                        className="empty-state-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <h3 className="empty-state-title">No bookmarks yet</h3>
+                    <p className="empty-state-description">Start adding bookmarks to organize your favorite websites.</p>
                 </div>
             )}
 

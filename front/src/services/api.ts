@@ -74,7 +74,12 @@ export const api = {
 
     // Collection methods
     collections: {
-        getAll: () => fetchWithAuth('/api/collections'),
+        // Modified to only get collections for the current user
+        getAll: async () => {
+            const data = await fetchWithAuth('/api/collections');
+            const userId = getUserIdFromToken();
+            return data.filter((collection: any) => collection.user_id === userId);
+        },
         getById: (id: number) => fetchWithAuth(`/api/collections/${id}`),
         create: (data: { name: string; description?: string }) => {
             const userId = getUserIdFromToken();
@@ -115,7 +120,12 @@ export const api = {
 
     // Bookmark methods
     bookmarks: {
-        getAll: () => fetchWithAuth('/api/bookmarks'),
+        // Modified to only get bookmarks for the current user
+        getAll: async () => {
+            const data = await fetchWithAuth('/api/bookmarks');
+            const userId = getUserIdFromToken();
+            return data.filter((bookmark: any) => bookmark.user_id === userId);
+        },
         getById: (id: number) => fetchWithAuth(`/api/bookmarks/${id}`),
         create: (data: { title: string; url: string; description?: string }) => {
             const userId = getUserIdFromToken();

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { useDataRefresh } from '../context/DataRefreshContext';
 
 // Types for our collections
 interface Collection {
@@ -13,6 +14,9 @@ interface Collection {
 }
 
 const CollectionsTab = () => {
+    // Access the refresh context
+    const { collectionsVersion, refreshCollections, refreshBookmarks } = useDataRefresh();
+
     // State for collections and loading state
     const [collections, setCollections] = useState<Collection[]>([]);
     const [loading, setLoading] = useState(true);
@@ -25,10 +29,10 @@ const CollectionsTab = () => {
     });
     const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
 
-    // Fetch collections on component mount
+    // Fetch collections when component mounts or when collectionsVersion changes
     useEffect(() => {
         fetchCollections();
-    }, []);
+    }, [collectionsVersion]);
 
     // Function to fetch collections from API
     const fetchCollections = async () => {
@@ -114,6 +118,9 @@ const CollectionsTab = () => {
             // Add the new collection to the state with a bookmark count of 0
             setCollections([...collections, { ...response, bookmarkCount: 0 }]);
             setShowAddModal(false);
+
+            // Refresh collections globally
+            refreshCollections();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error creating collection:', err);
@@ -141,6 +148,9 @@ const CollectionsTab = () => {
 
             setShowEditModal(false);
             setEditingCollection(null);
+
+            // Refresh collections globally
+            refreshCollections();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error updating collection:', err);
@@ -155,6 +165,11 @@ const CollectionsTab = () => {
                 setError(null);
                 await api.collections.delete(id);
                 setCollections(collections.filter((collection) => collection.id !== id));
+
+                // Refresh collections globally
+                refreshCollections();
+                // Also refresh bookmarks as they may need to update
+                refreshBookmarks();
             } catch (err) {
                 const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
                 console.error('Error deleting collection:', err);
@@ -177,61 +192,21 @@ const CollectionsTab = () => {
         <div className="collections-tab">
             {error && <div className="error-message">{error}</div>}
 
+            {/* Always show the Add Collection button at the top */}
+            <div className="add-button-container">
+                <button className="add-button" onClick={handleAddCollection}>
+                    <span className="plus-icon">+</span> Add Collection
+                </button>
+            </div>
+
             {collections.length > 0 ? (
-                <>
-                    <div className="tab-actions">
-                        <button className="btn btn-primary add-collection-btn" onClick={handleAddCollection}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            <span>Add Collection</span>
-                        </button>
-                    </div>
-                    <div className="collections-grid">
-                        {collections.map((collection) => (
-                            <div className="collection-card" key={collection.id}>
-                                <div className="collection-header">
-                                    <h3 className="collection-title">{collection.name}</h3>
-                                    <div className="collection-actions">
-                                        <button className="action-btn edit" onClick={() => handleEditCollection(collection)}>
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                        </button>
-                                        <button className="action-btn delete" onClick={() => deleteCollection(collection.id)}>
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <p className="collection-description">{collection.description}</p>
-                                <div className="collection-meta">
-                                    <div className="bookmark-count">
+                <div className="collections-grid">
+                    {collections.map((collection) => (
+                        <div className="collection-card" key={collection.id}>
+                            <div className="collection-header">
+                                <h3 className="collection-title">{collection.name}</h3>
+                                <div className="collection-actions">
+                                    <button className="action-btn edit" onClick={() => handleEditCollection(collection)}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24"
@@ -240,11 +215,11 @@ const CollectionsTab = () => {
                                             strokeWidth="2"
                                             strokeLinecap="round"
                                             strokeLinejoin="round">
-                                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                         </svg>
-                                        <span>{collection.bookmarkCount || 0} bookmarks</span>
-                                    </div>
-                                    <div className="collection-date">
+                                    </button>
+                                    <button className="action-btn delete" onClick={() => deleteCollection(collection.id)}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24"
@@ -253,20 +228,62 @@ const CollectionsTab = () => {
                                             strokeWidth="2"
                                             strokeLinecap="round"
                                             strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                         </svg>
-                                        <span>{formatDate(collection.created_at)}</span>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </>
+                            <p className="collection-description">{collection.description}</p>
+                            <div className="collection-meta">
+                                <div className="bookmark-count">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <span>{collection.bookmarkCount || 0} bookmarks</span>
+                                </div>
+                                <div className="collection-date">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>{formatDate(collection.created_at)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             ) : (
-                <div className="empty-bookmarks-container" onClick={handleAddCollection}>
-                    <div className="big-plus-icon">+</div>
-                    <div className="add-bookmark-text">Create Collection</div>
+                <div className="empty-state">
+                    <svg
+                        className="empty-state-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M3 12h18"></path>
+                        <path d="M3 18h18"></path>
+                    </svg>
+                    <h3 className="empty-state-title">No collections yet</h3>
+                    <p className="empty-state-description">Create collections to organize your bookmarks by topic or category.</p>
                 </div>
             )}
 
