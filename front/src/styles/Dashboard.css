@@ -44,6 +44,8 @@ body {
 .app-container {
     display: flex;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -54,9 +56,11 @@ body {
     display: flex;
     flex-direction: column;
     position: fixed;
-    height: 100%;
+    height: 100vh;
     z-index: 10;
     transition: transform 0.3s ease;
+    overflow-y: auto;
+    padding-bottom: 1rem; /* Add padding to prevent content from being cut off */
 }
 
 .sidebar-header {
@@ -118,11 +122,14 @@ body {
 .sidebar-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--gray-200);
+    margin-top: auto; /* Push to bottom */
+    margin-bottom: 0.5rem; /* Add space at the bottom */
 }
 
 .user-profile {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .avatar {
@@ -140,16 +147,23 @@ body {
 
 .user-info {
     flex: 1;
+    overflow: hidden; /* Prevent overflow */
 }
 
 .user-name {
     font-weight: 600;
     color: var(--gray-800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user-email {
     font-size: 0.75rem;
     color: var(--gray-500);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Main Content */
@@ -157,6 +171,7 @@ body {
     flex: 1;
     margin-left: 250px;
     padding: 1.5rem;
+    width: calc(100% - 250px);
 }
 
 .content-header {
@@ -164,12 +179,15 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 2rem; /* Add spacing between elements */
 }
 
 .content-title {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--gray-900);
+    margin-right: 1.5rem; /* Add spacing after the title */
+    min-width: max-content; /* Prevent wrapping */
 }
 
 .content-section {
@@ -194,6 +212,8 @@ body {
 .search-bar {
     position: relative;
     width: 250px;
+    flex: 1; /* Allow search bar to take remaining space */
+    max-width: 500px; /* Limit maximum width */
 }
 
 .search-input {
@@ -251,6 +271,8 @@ body {
     background-color: transparent;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
+    width: 100px; /* Fixed width */
+    min-width: 100px; /* Ensure fixed width even when contents try to expand */
 }
 
 .btn-outline:hover {
@@ -269,6 +291,7 @@ body {
     background-color: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
 }
 
 .empty-state-icon {
@@ -327,6 +350,7 @@ body {
 
     .main-content {
         margin-left: 0;
+        width: 100%;
     }
 
     .content-header {

@@ -1,6 +1,5 @@
-// src/components/Dashboard.tsx
 import { useState } from 'react';
-import { useUser } from '../context/UseUser.tsx';
+import { useUser } from '../context/UseUser';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -70,26 +69,24 @@ const Dashboard = () => {
             <div className="main-content">
                 <div className="content-header">
                     <h1 className="content-title">Dashboard</h1>
-                    <div className="actions">
-                        <div className="search-bar">
-                            <svg
-                                className="search-icon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" className="search-input" placeholder="Search bookmarks..." />
-                        </div>
-                        <button className="btn btn-outline" onClick={logout}>
-                            Logout
-                        </button>
+                    <div className="search-bar">
+                        <svg
+                            className="search-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" className="search-input" placeholder="Search bookmarks..." />
                     </div>
+                    <button className="btn btn-outline" onClick={logout}>
+                        Logout
+                    </button>
                 </div>
 
                 <div className="content-section">
