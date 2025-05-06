@@ -1,7 +1,6 @@
 import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
 import { useUser } from './context/UseUser';
-import './App.css';
 
 function App() {
     const { token, isLoading, login } = useUser();
