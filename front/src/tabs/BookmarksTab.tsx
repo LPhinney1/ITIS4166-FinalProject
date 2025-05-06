@@ -12,6 +12,7 @@ interface Bookmark {
 
 const BookmarksTab = () => {
     // State for bookmarks and add bookmark modal
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
 

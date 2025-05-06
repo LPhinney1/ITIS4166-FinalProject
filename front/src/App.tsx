@@ -1,11 +1,13 @@
-//import { useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useState } from 'react';
 import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
 import { useUser } from './context/UseUser';
 import './App.css';
 
 function App() {
-    const { token, isLoading, login } = useUser();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { token, isLoading, login, logout } = useUser();
 
     if (isLoading) {
         return <div className="loading-screen">Loading...</div>;
