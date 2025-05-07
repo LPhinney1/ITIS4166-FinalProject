@@ -74,8 +74,13 @@ export const api = {
 
     // Collection methods
     collections: {
-        // Modified to only get collections for the current user
-        getAll: () => fetchWithAuth('/api/tags'),
+        // Fixed to get collections for the current user
+        getAll: async () => {
+            const data = await fetchWithAuth('/api/collections');
+            const userId = getUserIdFromToken();
+            // Filter collections to only include those belonging to the current user
+            return data.filter((collection: any) => collection.user_id === userId);
+        },
         getById: (id: number) => fetchWithAuth(`/api/collections/${id}`),
         create: (data: { name: string; description?: string }) => {
             const userId = getUserIdFromToken();
