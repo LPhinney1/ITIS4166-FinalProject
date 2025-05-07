@@ -75,11 +75,7 @@ export const api = {
     // Collection methods
     collections: {
         // Modified to only get collections for the current user
-        getAll: async () => {
-            const data = await fetchWithAuth('/api/collections');
-            const userId = getUserIdFromToken();
-            return data.filter((collection: any) => collection.user_id === userId);
-        },
+        getAll: () => fetchWithAuth('/api/tags'),
         getById: (id: number) => fetchWithAuth(`/api/collections/${id}`),
         create: (data: { name: string; description?: string }) => {
             const userId = getUserIdFromToken();
@@ -167,11 +163,7 @@ export const api = {
 
     // Tag methods
     tags: {
-        getAll: async () => {
-            const data = await fetchWithAuth('/api/tags');
-            const userId = getUserIdFromToken();
-            return data.filter((tag: any) => tag.user_id === userId);
-        },
+        getAll: () => fetchWithAuth('/api/tags'),
         getById: (id: number) => fetchWithAuth(`/api/tags/${id}`),
         create: (data: { name: string; slug: string }) =>
             fetchWithAuth('/api/tags', {
