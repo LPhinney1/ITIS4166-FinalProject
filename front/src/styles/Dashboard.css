@@ -237,6 +237,7 @@ a:hover {
     background-color: var(--primary-dark);
     transform: scale(1.05);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--white); 
 }
 
 .section-add-button svg {
@@ -268,6 +269,7 @@ a:hover {
 
 .btn-primary:hover {
     background-color: var(--primary-dark);
+    color: var(--white); 
 }
 
 .btn-outline {
@@ -308,6 +310,7 @@ a:hover {
 
 .add-button:hover {
     background-color: var(--primary-dark);
+    color: var(--white); 
 }
 
 .plus-icon {
@@ -819,6 +822,7 @@ textarea.form-control {
 
 .settings-form .form-button:hover:not(:disabled) {
     background-color: var(--primary-dark);
+    color: var(--white); 
 }
 
 .settings-form .form-success {
