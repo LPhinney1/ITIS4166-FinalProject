@@ -35,7 +35,6 @@ export async function updateUser(updatedUser: Partial<User>): Promise<User> {
         hashedPassword = await bcrypt.hash(updatedUser.password, 10);
     }
 
-    console.log(hashedPassword);
     return userRepositories.updateUser({
         id: updatedUser.id,
         username: updatedUser.username ?? existingUser.username,
