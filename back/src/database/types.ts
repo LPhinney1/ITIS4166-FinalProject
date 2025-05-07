@@ -30,6 +30,7 @@ export type BookmarkTable = {
 
 export type TagTable = {
     id: Generated<number>;
+    user_id: number;
     name: string;
     slug: string;
     created_at: Date;

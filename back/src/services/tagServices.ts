@@ -10,24 +10,26 @@ export async function getTagById(id: number) {
 }
 
 export async function createTag(newTag: Partial<Tag>): Promise<Tag> {
-    if (!newTag.name || !newTag.slug) {
-        return Promise.reject(new Error('name and slug are required'));
+    if (!newTag.user_id || !newTag.name || !newTag.slug) {
+        return Promise.reject(new Error('user_id, name, and slug are required'));
     }
 
     return tagRepositories.createTag({
+        user_id: newTag.user_id,
         name: newTag.name,
         slug: newTag.slug,
     });
 }
 
 export async function updateTag(updatedTag: Partial<Tag>): Promise<Tag> {
-    if (!updatedTag.id) return Promise.reject(new Error('ID required'));
+    if (!updatedTag.id) return Promise.reject(new Error('Tag ID required'));
 
     const existing = await tagRepositories.getTagById(updatedTag.id);
     if (!existing) return Promise.reject(new Error('ID did not match any tags'));
 
     return tagRepositories.updateTag({
         id: updatedTag.id,
+        user_id: updatedTag.user_id,
         name: updatedTag.name ?? existing.name,
         slug: updatedTag.slug ?? existing.slug,
     });
