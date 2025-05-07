@@ -65,3 +65,5 @@ app.use('/api/collections', collectionRouter);
 
 const host = process.env.HOST;
 app.listen(3000, () => console.log(`Backend running @\n\x1b[35mhttp://${host}:3000/\x1b[0m`));
+
+export default app;
