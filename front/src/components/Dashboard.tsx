@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
 import CollectionsTab from '../tabs/CollectionsTab';
 import TagsTab from '../tabs/TagsTab';
-//import SettingsTab from '../tabs/SettingsTab'
 import { api } from '../services/api';
 import { useDataRefresh } from '../context/DataRefreshContext';
 import '../styles/Dashboard.css';
 
 // Create a context to share the selected collection ID
-import React from 'react';
-export const SelectedCollectionContext = React.createContext<number | null>(null);
+export const SelectedCollectionContext = createContext<number | null>(null);
 
 // Types for our data
 interface Bookmark {
@@ -33,25 +31,46 @@ interface Collection {
     bookmarkCount?: number;
 }
 
+interface Tag {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
+}
+
 const Dashboard = () => {
     const { logout, token } = useUser();
-    const { bookmarksVersion, collectionsVersion } = useDataRefresh();
+    const { bookmarksVersion, collectionsVersion, refreshBookmarks, refreshCollections } = useDataRefresh();
 
-    const [sidebarActive, setSidebarActive] = useState(false);
+    // UI state
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [sidebarActive, setSidebarActive] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // User data state
     const [username, setUsername] = useState('User');
     const [recentBookmarks, setRecentBookmarks] = useState<Bookmark[]>([]);
     const [userCollections, setUserCollections] = useState<Collection[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [allCollections, setAllCollections] = useState<Collection[]>([]);
 
-    // State to track selected collection ID
+    // Modal state
+    const [showEditBookmarkModal, setShowEditBookmarkModal] = useState(false);
+    const [showEditCollectionModal, setShowEditCollectionModal] = useState(false);
+    const [showCollectionModal, setShowCollectionModal] = useState(false);
+
+    // Selected item state
     const [selectedCollectionId, setSelectedCollectionId] = useState<number | null>(null);
+    const [selectedBookmarkId, setSelectedBookmarkId] = useState<number | null>(null);
+    const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
+    const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
+    const [editTags, setEditTags] = useState('');
 
-    // Extract username from token and fetch user data
+    // Extract username from token
     useEffect(() => {
         if (token) {
             try {
-                // Simple decoding without additional libraries
                 const base64Url = token.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 const jsonPayload = decodeURIComponent(
@@ -86,8 +105,9 @@ const Dashboard = () => {
             const bookmarksData = await api.bookmarks.getAll();
             setRecentBookmarks(bookmarksData.slice(0, 3)); // Get the most recent 3 bookmarks
 
-            // Fetch collections with bookmark counts
+            // Fetch all collections for modals and data
             const collectionsData = await api.collections.getAll();
+            setAllCollections(collectionsData);
 
             // For each collection, get its bookmarks to count them
             const collectionsWithCount = await Promise.all(
@@ -115,6 +135,10 @@ const Dashboard = () => {
         }
     };
 
+    // ==================
+    // Navigation handlers
+    // ==================
+
     const toggleSidebar = () => {
         setSidebarActive(!sidebarActive);
     };
@@ -133,10 +157,237 @@ const Dashboard = () => {
         }
     };
 
-    // Handle navigating to a specific collection
     const handleViewCollection = (collectionId: number) => {
         setSelectedCollectionId(collectionId);
         setActiveTab('collections');
+    };
+
+    // ==================
+    // Bookmark handlers
+    // ==================
+
+    const handleEditBookmark = async (bookmark: Bookmark) => {
+        setEditingBookmark(bookmark);
+
+        // Fetch tags for this bookmark
+        try {
+            const tags = await api.bookmarks.getTags(bookmark.id);
+            const tagNames = tags.map((tag: Tag) => tag.name).join(', ');
+            setEditTags(tagNames);
+        } catch (err) {
+            console.error('Error fetching tags:', err);
+            setEditTags('');
+        }
+
+        setShowEditBookmarkModal(true);
+    };
+
+    const handleDeleteBookmark = async (id: number) => {
+        if (window.confirm('Are you sure you want to delete this bookmark?')) {
+            try {
+                await api.bookmarks.delete(id);
+                // Update the local state
+                setRecentBookmarks(recentBookmarks.filter((bookmark) => bookmark.id !== id));
+                // Refresh data globally
+                refreshBookmarks();
+                fetchUserData();
+            } catch (err) {
+                console.error('Error deleting bookmark:', err);
+                setError('Failed to delete bookmark');
+            }
+        }
+    };
+
+    const updateBookmark = async () => {
+        if (!editingBookmark) return;
+
+        try {
+            const updated = await api.bookmarks.update(editingBookmark.id, {
+                title: editingBookmark.title,
+                url: editingBookmark.url,
+                description: editingBookmark.description,
+            });
+
+            // Process tags if needed
+            if (editTags.trim()) {
+                const currentTags = await api.bookmarks.getTags(editingBookmark.id);
+                const newTagNames = editTags
+                    .split(',')
+                    .map((tag) => tag.trim())
+                    .filter((tag) => tag);
+
+                // Remove tags that are no longer associated
+                for (const tag of currentTags) {
+                    if (!newTagNames.some((name) => name.toLowerCase() === tag.name.toLowerCase())) {
+                        await api.bookmarks.removeTag(editingBookmark.id, tag.id);
+                    }
+                }
+
+                // Add new tags
+                const allTags = await api.tags.getAll();
+                for (const tagName of newTagNames) {
+                    if (!currentTags.some((t: Tag) => t.name.toLowerCase() === tagName.toLowerCase())) {
+                        // Create or find the tag
+                        const slug = tagName.toLowerCase().replace(/\s+/g, '-');
+                        const existingTag = allTags.find((t: Tag) => t.name.toLowerCase() === tagName.toLowerCase() || t.slug === slug);
+
+                        let tagId: number;
+                        if (existingTag) {
+                            tagId = existingTag.id;
+                        } else {
+                            const newTag = await api.tags.create({
+                                name: tagName,
+                                slug: slug,
+                            });
+                            tagId = newTag.id;
+                        }
+
+                        await api.bookmarks.addTag(editingBookmark.id, tagId);
+                    }
+                }
+            }
+
+            // Update local state
+            setRecentBookmarks((prev) => prev.map((bookmark) => (bookmark.id === editingBookmark.id ? updated : bookmark)));
+
+            // Close modal and reset state
+            setShowEditBookmarkModal(false);
+            setEditingBookmark(null);
+            setEditTags('');
+
+            // Refresh data
+            refreshBookmarks();
+            fetchUserData();
+        } catch (err) {
+            console.error('Error updating bookmark:', err);
+            setError('Failed to update bookmark');
+        }
+    };
+
+    const handleAddToCollection = (bookmarkId: number) => {
+        setSelectedBookmarkId(bookmarkId);
+        setSelectedCollectionId(null);
+        setShowCollectionModal(true);
+    };
+
+    const addToCollection = async () => {
+        if (!selectedBookmarkId || !selectedCollectionId) {
+            setError('Please select a collection');
+            return;
+        }
+
+        try {
+            // Check if bookmark is already in the collection
+            const collectionBookmarks = await api.collections.getBookmarks(selectedCollectionId);
+            const isAlreadyAdded = collectionBookmarks.some((bookmark: Bookmark) => bookmark.id === selectedBookmarkId);
+
+            if (isAlreadyAdded) {
+                setError('This bookmark is already in this collection');
+                return;
+            }
+
+            await api.collections.addBookmark(selectedCollectionId, selectedBookmarkId);
+
+            // Close modal and reset state
+            setShowCollectionModal(false);
+            setSelectedBookmarkId(null);
+            setSelectedCollectionId(null);
+
+            // Refresh data
+            refreshCollections();
+            fetchUserData();
+        } catch (err) {
+            console.error('Error adding to collection:', err);
+            setError('Failed to add to collection');
+        }
+    };
+
+    // ==================
+    // Collection handlers
+    // ==================
+
+    const handleEditCollection = (collection: Collection) => {
+        setEditingCollection(collection);
+        setShowEditCollectionModal(true);
+    };
+
+    const handleDeleteCollection = async (id: number) => {
+        if (window.confirm('Are you sure you want to delete this collection?')) {
+            try {
+                await api.collections.delete(id);
+                // Update the local state
+                setUserCollections(userCollections.filter((collection) => collection.id !== id));
+                // Refresh data globally
+                refreshCollections();
+                fetchUserData();
+            } catch (err) {
+                console.error('Error deleting collection:', err);
+                setError('Failed to delete collection');
+            }
+        }
+    };
+
+    const updateCollection = async () => {
+        if (!editingCollection) return;
+
+        try {
+            const updated = await api.collections.update(editingCollection.id, {
+                name: editingCollection.name,
+                description: editingCollection.description,
+            });
+
+            // Add the bookmark count from the original object
+            const updatedWithCount = {
+                ...updated,
+                bookmarkCount: editingCollection.bookmarkCount,
+            };
+
+            // Update local state
+            setUserCollections((prev) => prev.map((collection) => (collection.id === editingCollection.id ? updatedWithCount : collection)));
+
+            // Close modal and reset state
+            setShowEditCollectionModal(false);
+            setEditingCollection(null);
+
+            // Refresh data
+            refreshCollections();
+            fetchUserData();
+        } catch (err) {
+            console.error('Error updating collection:', err);
+            setError('Failed to update collection');
+        }
+    };
+
+    // ==================
+    // Form input handlers
+    // ==================
+
+    const handleEditBookmarkChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+
+        if (id === 'edit-bookmark-tags') {
+            setEditTags(value);
+        } else if (editingBookmark) {
+            setEditingBookmark({
+                ...editingBookmark,
+                [id.replace('edit-bookmark-', '')]: value,
+            });
+        }
+    };
+
+    const handleEditCollectionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+
+        if (editingCollection) {
+            setEditingCollection({
+                ...editingCollection,
+                [id.replace('edit-collection-', '')]: value,
+            });
+        }
+    };
+
+    const handleCollectionSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCollectionId(Number(e.target.value));
     };
 
     // Format date for display
@@ -219,21 +470,6 @@ const Dashboard = () => {
                         {activeTab === 'collections' && 'Collections'}
                         {activeTab === 'tags' && 'Tags'}
                     </h1>
-                    <div className="search-bar">
-                        <svg
-                            className="search-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <input type="text" className="search-input" placeholder="Search bookmarks..." />
-                    </div>
                     <button className="btn btn-outline" onClick={logout}>
                         Logout
                     </button>
@@ -245,61 +481,145 @@ const Dashboard = () => {
                         {/* Dashboard Tab */}
                         {activeTab === 'dashboard' && (
                             <>
+                                {/* Bookmarks Section */}
                                 <div className="content-section">
                                     <div className="section-header">
                                         <h2 className="section-title">Recent Bookmarks</h2>
-                                        <button className="section-action" onClick={() => handleTabClick('bookmarks')}>
-                                            View All
+                                        <button className="section-add-button" onClick={() => handleTabClick('bookmarks')} title="Add New Bookmark">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
                                         </button>
                                     </div>
 
                                     {loading ? (
                                         <div className="loading">Loading bookmarks...</div>
                                     ) : recentBookmarks.length > 0 ? (
-                                        <div className="dashboard-grid">
-                                            {recentBookmarks.map((bookmark) => (
-                                                <div className="bookmark-card" key={bookmark.id}>
-                                                    <div className="bookmark-thumbnail">
-                                                        <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
-                                                    </div>
-                                                    <div className="bookmark-content">
-                                                        <div className="bookmark-header">
-                                                            <div className="bookmark-title">
-                                                                {/* Favicon removed here */}
-                                                                <h3>
-                                                                    <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-                                                                        {bookmark.title}
-                                                                    </a>
-                                                                </h3>
+                                        <>
+                                            <div className="dashboard-grid">
+                                                {recentBookmarks.map((bookmark) => (
+                                                    <div className="bookmark-card" key={bookmark.id}>
+                                                        <div className="bookmark-thumbnail">
+                                                            <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`} alt={bookmark.title} />
+                                                        </div>
+                                                        <div className="bookmark-content">
+                                                            <div className="bookmark-header">
+                                                                <div className="bookmark-title">
+                                                                    <h3>
+                                                                        <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+                                                                            {bookmark.title}
+                                                                        </a>
+                                                                    </h3>
+                                                                </div>
+                                                                <div className="bookmark-actions">
+                                                                    <button
+                                                                        className="action-btn add-to-collection"
+                                                                        title="Add to Collection"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleAddToCollection(bookmark.id);
+                                                                        }}>
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="2"
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round">
+                                                                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                                                            <line x1="12" y1="11" x2="12" y2="17"></line>
+                                                                            <line x1="9" y1="14" x2="15" y2="14"></line>
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button
+                                                                        className="action-btn edit"
+                                                                        title="Edit Bookmark"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleEditBookmark(bookmark);
+                                                                        }}>
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="2"
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round">
+                                                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button
+                                                                        className="action-btn delete"
+                                                                        title="Delete Bookmark"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleDeleteBookmark(bookmark.id);
+                                                                        }}>
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="2"
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round">
+                                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <p className="bookmark-description">{bookmark.description}</p>
+                                                            <div className="bookmark-meta">
+                                                                <div className="bookmark-date">
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round">
+                                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                                                    </svg>
+                                                                    <span>{formatDate(bookmark.created_at)}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <p className="bookmark-description">{bookmark.description}</p>
-                                                        <div className="bookmark-meta">
-                                                            <div className="bookmark-date">
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth="2"
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round">
-                                                                    <circle cx="12" cy="12" r="10"></circle>
-                                                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                                                </svg>
-                                                                <span>{formatDate(bookmark.created_at)}</span>
-                                                            </div>
-                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                            <div className="add-card" onClick={() => handleTabClick('bookmarks')}>
-                                                <div className="add-card-content">
-                                                    <div className="add-icon">+</div>
-                                                    <p>Add more bookmarks</p>
-                                                </div>
+                                                ))}
                                             </div>
-                                        </div>
+
+                                            {/* View All Bookmarks button */}
+                                            <div className="view-all-container">
+                                                <button className="view-all-button" onClick={() => handleTabClick('bookmarks')}>
+                                                    <span>View All Bookmarks</span>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round">
+                                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </>
                                     ) : (
                                         <div className="empty-state">
                                             <svg
@@ -322,66 +642,131 @@ const Dashboard = () => {
                                     )}
                                 </div>
 
+                                {/* Collections Section */}
                                 <div className="content-section">
                                     <div className="section-header">
                                         <h2 className="section-title">Your Collections</h2>
-                                        <button className="section-action" onClick={() => handleTabClick('collections')}>
-                                            View All
+                                        <button className="section-add-button" onClick={() => handleTabClick('collections')} title="Add New Collection">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
                                         </button>
                                     </div>
 
                                     {loading ? (
                                         <div className="loading">Loading collections...</div>
                                     ) : userCollections.length > 0 ? (
-                                        <div className="dashboard-grid">
-                                            {userCollections.map((collection) => (
-                                                <div
-                                                    className="collection-card"
-                                                    key={collection.id}
-                                                    onClick={() => handleViewCollection(collection.id)}
-                                                    style={{ cursor: 'pointer' }}>
-                                                    <div className="collection-header">
-                                                        <h3 className="collection-title">{collection.name}</h3>
-                                                    </div>
-                                                    <p className="collection-description">{collection.description}</p>
-                                                    <div className="collection-meta">
-                                                        <div className="bookmark-count">
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 24 24"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                strokeWidth="2"
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round">
-                                                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                                            </svg>
-                                                            <span>{collection.bookmarkCount || 0} bookmarks</span>
+                                        <>
+                                            <div className="dashboard-grid">
+                                                {userCollections.map((collection) => (
+                                                    <div
+                                                        className="collection-card"
+                                                        key={collection.id}
+                                                        onClick={() => handleViewCollection(collection.id)}
+                                                        style={{ cursor: 'pointer' }}>
+                                                        <div className="collection-header">
+                                                            <h3 className="collection-title">{collection.name}</h3>
+                                                            <div className="collection-actions">
+                                                                <button
+                                                                    className="action-btn edit"
+                                                                    title="Edit Collection"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleEditCollection(collection);
+                                                                    }}>
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round">
+                                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                                    </svg>
+                                                                </button>
+                                                                <button
+                                                                    className="action-btn delete"
+                                                                    title="Delete Collection"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleDeleteCollection(collection.id);
+                                                                    }}>
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth="2"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round">
+                                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                        <div className="collection-date">
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 24 24"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                strokeWidth="2"
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round">
-                                                                <circle cx="12" cy="12" r="10"></circle>
-                                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                                            </svg>
-                                                            <span>{formatDate(collection.created_at)}</span>
+                                                        <p className="collection-description">{collection.description}</p>
+                                                        <div className="collection-meta">
+                                                            <div className="bookmark-count">
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="2"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round">
+                                                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                                                </svg>
+                                                                <span>{collection.bookmarkCount || 0} bookmarks</span>
+                                                            </div>
+                                                            <div className="collection-date">
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="2"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round">
+                                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                                </svg>
+                                                                <span>{formatDate(collection.created_at)}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                            <div className="add-card" onClick={() => handleTabClick('collections')}>
-                                                <div className="add-card-content">
-                                                    <div className="add-icon">+</div>
-                                                    <p>Add more collections</p>
-                                                </div>
+                                                ))}
                                             </div>
-                                        </div>
+
+                                            {/* View All Collections button */}
+                                            <div className="view-all-container">
+                                                <button className="view-all-button" onClick={() => handleTabClick('collections')}>
+                                                    <span>View All Collections</span>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round">
+                                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </>
                                     ) : (
                                         <div className="empty-state">
                                             <svg
@@ -428,6 +813,241 @@ const Dashboard = () => {
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
             </button>
+
+            {/* === MODALS === */}
+
+            {/* Edit Bookmark Modal */}
+            {showEditBookmarkModal && editingBookmark && (
+                <div className="modal-backdrop active">
+                    <div className="modal">
+                        <div className="modal-header">
+                            <h2 className="modal-title">Edit Bookmark</h2>
+                            <button
+                                className="modal-close"
+                                onClick={() => {
+                                    setShowEditBookmarkModal(false);
+                                    setEditingBookmark(null);
+                                    setEditTags('');
+                                }}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    updateBookmark();
+                                }}>
+                                <div className="form-group">
+                                    <label htmlFor="edit-bookmark-url" className="form-label">
+                                        URL
+                                    </label>
+                                    <input type="url" id="edit-bookmark-url" className="form-control" value={editingBookmark.url} onChange={handleEditBookmarkChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="edit-bookmark-title" className="form-label">
+                                        Title
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="edit-bookmark-title"
+                                        className="form-control"
+                                        value={editingBookmark.title}
+                                        onChange={handleEditBookmarkChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="edit-bookmark-description" className="form-label">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        id="edit-bookmark-description"
+                                        className="form-control"
+                                        value={editingBookmark.description}
+                                        onChange={handleEditBookmarkChange}></textarea>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="edit-bookmark-tags" className="form-label">
+                                        Tags
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="edit-bookmark-tags"
+                                        className="form-control"
+                                        placeholder="Enter tags separated by commas"
+                                        value={editTags}
+                                        onChange={handleEditBookmarkChange}
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                className="btn btn-outline"
+                                onClick={() => {
+                                    setShowEditBookmarkModal(false);
+                                    setEditingBookmark(null);
+                                    setEditTags('');
+                                }}>
+                                Cancel
+                            </button>
+                            <button className="btn btn-primary" onClick={updateBookmark}>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Collection Modal */}
+            {showEditCollectionModal && editingCollection && (
+                <div className="modal-backdrop active">
+                    <div className="modal">
+                        <div className="modal-header">
+                            <h2 className="modal-title">Edit Collection</h2>
+                            <button
+                                className="modal-close"
+                                onClick={() => {
+                                    setShowEditCollectionModal(false);
+                                    setEditingCollection(null);
+                                }}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    updateCollection();
+                                }}>
+                                <div className="form-group">
+                                    <label htmlFor="edit-collection-name" className="form-label">
+                                        Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="edit-collection-name"
+                                        className="form-control"
+                                        value={editingCollection.name}
+                                        onChange={handleEditCollectionChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="edit-collection-description" className="form-label">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        id="edit-collection-description"
+                                        className="form-control"
+                                        value={editingCollection.description}
+                                        onChange={handleEditCollectionChange}></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                className="btn btn-outline"
+                                onClick={() => {
+                                    setShowEditCollectionModal(false);
+                                    setEditingCollection(null);
+                                }}>
+                                Cancel
+                            </button>
+                            <button className="btn btn-primary" onClick={updateCollection}>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add to Collection Modal */}
+            {showCollectionModal && (
+                <div className="modal-backdrop active">
+                    <div className="modal">
+                        <div className="modal-header">
+                            <h2 className="modal-title">Add to Collection</h2>
+                            <button
+                                className="modal-close"
+                                onClick={() => {
+                                    setShowCollectionModal(false);
+                                    setSelectedBookmarkId(null);
+                                    setSelectedCollectionId(null);
+                                    setError(null);
+                                }}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {error && <div className="error-message">{error}</div>}
+                            {allCollections.length > 0 ? (
+                                <div className="form-group">
+                                    <label htmlFor="collection-select" className="form-label">
+                                        Select Collection
+                                    </label>
+                                    <select id="collection-select" className="form-control" value={selectedCollectionId || ''} onChange={handleCollectionSelect}>
+                                        <option value="">-- Select a Collection --</option>
+                                        {allCollections.map((collection) => (
+                                            <option key={collection.id} value={collection.id}>
+                                                {collection.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ) : (
+                                <p>You don't have any collections yet. Create a collection first.</p>
+                            )}
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                className="btn btn-outline"
+                                onClick={() => {
+                                    setShowCollectionModal(false);
+                                    setSelectedBookmarkId(null);
+                                    setSelectedCollectionId(null);
+                                    setError(null);
+                                }}>
+                                Cancel
+                            </button>
+                            <button className="btn btn-primary" onClick={addToCollection} disabled={!selectedCollectionId || allCollections.length === 0}>
+                                Add to Collection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
