@@ -42,19 +42,37 @@ const TagsTab: React.FC = () => {
         }
     };
 
+    const deleteTag = async (tagId: number) => {
+        try {
+            await api.tags.delete(tagId);
+            await fetchTags();
+        } catch (error) {
+            console.error('Error deleting tag:', error);
+        }
+    };
+
     const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString();
 
     return (
         <div className="dashboard-tab-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {tags.map((tag) => (
-                <div
-                    key={tag.id}
-                    className="tag-section"
-                    style={{
-                        marginTop: '12px',
-                        width: '100%',
-                    }}>
-                    <h2 className="tag-header">{tag.name}</h2>
+                <div key={tag.id} className="tag-section" style={{ marginTop: '12px', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <h2 className="tag-header">{tag.name}</h2>
+                        <button
+                            onClick={() => deleteTag(tag.id)}
+                            style={{
+                                color: 'red',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '1.2rem'
+                            }}
+                            title="Delete tag"
+                        >
+                            ×
+                        </button>
+                    </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         {(taggedBookmarks[tag.id] || []).map((bookmark) => (
                             <div key={bookmark.id} className="bookmark-card">

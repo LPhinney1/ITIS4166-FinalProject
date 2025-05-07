@@ -32,8 +32,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .ifNotExists()
         .addColumn('id', 'serial', (col) => col.primaryKey())
         .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade').notNull())
-        .addColumn('name', 'varchar(100)', (col) => col.unique().notNull())
-        .addColumn('slug', 'varchar(100)', (col) => col.unique().notNull())
+        .addColumn('name', 'varchar(100)', (col) => col.notNull())
+        .addColumn('slug', 'varchar(100)', (col) => col.notNull())
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .addColumn('updated_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
         .execute();
