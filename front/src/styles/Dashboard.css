@@ -40,12 +40,12 @@ body {
 }
 
 a {
-  font-weight: 500;
-  color: #ebbcba;
-  text-decoration: inherit;
+    font-weight: 500;
+    color: #ebbcba;
+    text-decoration: inherit;
 }
 a:hover {
-  color: #9ccfd8;
+    color: #9ccfd8;
 }
 
 /* ===== Layout ===== */
@@ -383,10 +383,6 @@ a:hover {
 .collection-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-}
-
-.collection-card:hover {
-    background-color: #fafafa;
 }
 
 .collection-card {
