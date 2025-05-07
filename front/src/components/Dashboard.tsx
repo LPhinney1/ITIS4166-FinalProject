@@ -2,7 +2,8 @@ import { useState, useEffect, createContext } from 'react';
 import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
 import CollectionsTab from '../tabs/CollectionsTab';
-import TagsTab from '../tabs/TagsTab';
+import TagsTab from '../tabs/TagsTab'
+import SettingsTab from '../tabs/SettingsTab'
 import { api } from '../services/api';
 import { useDataRefresh } from '../context/DataRefreshContext';
 import '../styles/Dashboard.css';
@@ -469,6 +470,7 @@ const Dashboard = () => {
                         {activeTab === 'bookmarks' && 'My Bookmarks'}
                         {activeTab === 'collections' && 'Collections'}
                         {activeTab === 'tags' && 'Tags'}
+                        {activeTab === 'settings' && 'Settings'}
                     </h1>
                     <button className="btn btn-outline" onClick={logout}>
                         Logout

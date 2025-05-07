@@ -202,8 +202,11 @@ export const api = {
         getBookmarks: (tagId: number) => fetchWithAuth(`/api/tags/${tagId}/bookmarks`),
     },
 
-    // User methods - just including the login method for completeness
+    // User methods - just including the login & update methods for completeness
     users: {
+        getAll: async () => {
+            return await fetchWithAuth('/api/users');
+        },
         login: async (username: string, password: string) => {
             const response = await fetch(`${baseUrl}/api/users/login`, {
                 method: 'POST',
@@ -219,5 +222,10 @@ export const api = {
             localStorage.setItem('authorization', `Bearer ${data.token}`);
             return data.token;
         },
+        update: (user: { id: number; username?: string; email?: string; password?: string }) =>
+            fetchWithAuth('/api/users', {
+                method: 'PUT',
+                body: JSON.stringify(user),
+            }),
     },
 };

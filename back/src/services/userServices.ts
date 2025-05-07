@@ -26,14 +26,20 @@ export async function createUser(newUser: Partial<User>): Promise<User> {
 
 export async function updateUser(updatedUser: Partial<User>): Promise<User> {
     if (!updatedUser.id) return Promise.reject(new Error('ID required'));
-    if (!(await userRepositories.getUserById(updatedUser.id)))
-        return Promise.reject(new Error('ID did not match any users'));
+
+    const existingUser = await userRepositories.getUserById(updatedUser.id);
+    if (!existingUser) return Promise.reject(new Error('ID did not match any users'));
+
+    let hashedPassword = existingUser.password;
+    if (updatedUser.password) {
+        hashedPassword = await bcrypt.hash(updatedUser.password, 10);
+    }
 
     return userRepositories.updateUser({
         id: updatedUser.id,
-        username: updatedUser.username,
-        email: updatedUser.email,
-        password: updatedUser.password,
+        username: updatedUser.username ?? existingUser.username,
+        email: updatedUser.email ?? existingUser.email,
+        password: hashedPassword,
     });
 }
 
