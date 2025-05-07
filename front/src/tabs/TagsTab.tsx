@@ -47,10 +47,13 @@ const TagsTab: React.FC = () => {
     return (
         <div className="dashboard-tab-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {tags.map((tag) => (
-                <div key={tag.id} className="tag-section" style={{
-                    marginTop: '12px',
-                    width: '100%'
-                }}>
+                <div
+                    key={tag.id}
+                    className="tag-section"
+                    style={{
+                        marginTop: '12px',
+                        width: '100%',
+                    }}>
                     <h2 className="tag-header">{tag.name}</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         {(taggedBookmarks[tag.id] || []).map((bookmark) => (
@@ -71,7 +74,14 @@ const TagsTab: React.FC = () => {
                                     <p className="bookmark-description">{bookmark.description}</p>
                                     <div className="bookmark-meta">
                                         <div className="bookmark-date">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <polyline points="12 6 12 12 16 14"></polyline>
                                             </svg>
