@@ -3,7 +3,7 @@ import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
 import CollectionsTab from '../tabs/CollectionsTab';
 import TagsTab from '../tabs/TagsTab'
-//import SettingsTab from '../tabs/SettingsTab'
+import SettingsTab from '../tabs/SettingsTab'
 import { api } from '../services/api';
 import { useDataRefresh } from '../context/DataRefreshContext';
 import '../styles/Dashboard.css';
@@ -28,23 +28,6 @@ interface Collection {
     updated_at: string;
     bookmarkCount?: number;
 }
-
-// interface Tags {
-//     id: number;
-//     name: string;
-//     slug: string;
-//     created_at: string;
-//     updated_at: string;
-// }
-
-// interface Settings {
-//     id: number;
-//     username: string;
-//     email: string;
-//     password_has: string;
-//     created_at: string;
-//     updated_at: string;
-// }
 
 const Dashboard = () => {
     const { logout, token } = useUser();
@@ -218,6 +201,7 @@ const Dashboard = () => {
                         {activeTab === 'bookmarks' && 'My Bookmarks'}
                         {activeTab === 'collections' && 'Collections'}
                         {activeTab === 'tags' && 'Tags'}
+                        {activeTab === 'settings' && 'Settings'}
                     </h1>
                     <div className="search-bar">
                         <svg
@@ -412,7 +396,7 @@ const Dashboard = () => {
                     {activeTab === 'collections' && <CollectionsTab />}
 
                     {/* Tags Tab */}
-                    {activeTab === 'tags' && <TagsTab />} {/* ✅ NEW */}
+                    {activeTab === 'tags' && <TagsTab />}
 
                     {/* {activeTab === 'tags' && (
                         <div className="tags-tab">
@@ -438,7 +422,7 @@ const Dashboard = () => {
             </div>
             
             {/* Settings */}
-
+            {activeTab === 'settings' && <SettingsTab />}
 
             {/* Mobile Menu Button */}
             <button className="mobile-menu-btn" onClick={toggleSidebar}>
