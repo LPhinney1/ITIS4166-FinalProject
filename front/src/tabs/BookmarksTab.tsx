@@ -41,6 +41,7 @@ const BookmarksTab = () => {
     const [collections, setCollections] = useState<Collection[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [notification, setNotification] = useState<string | null>(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showCollectionModal, setShowCollectionModal] = useState(false);
@@ -125,6 +126,17 @@ const BookmarksTab = () => {
 
         try {
             setError(null);
+
+            // Check if bookmark is already in the collection
+            const collectionBookmarks = await api.collections.getBookmarks(selectedCollectionId);
+            const isAlreadyAdded = collectionBookmarks.some((bookmark: Bookmark) => bookmark.id === selectedBookmarkId);
+
+            if (isAlreadyAdded) {
+                setNotification('This bookmark is already added to this collection');
+                setTimeout(() => setNotification(null), 3000);
+                return;
+            }
+
             await api.collections.addBookmark(selectedCollectionId, selectedBookmarkId);
             setShowCollectionModal(false);
 
@@ -133,7 +145,14 @@ const BookmarksTab = () => {
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
             console.error('Error adding bookmark to collection:', err);
-            setError(`Failed to add to collection: ${errorMessage}`);
+
+            // Check if it's likely a duplicate bookmark error
+            if (errorMessage.includes('API Error: 400')) {
+                setNotification('This bookmark is already added to this collection');
+                setTimeout(() => setNotification(null), 5000);
+            } else {
+                setError(`Failed to add to collection: ${errorMessage}`);
+            }
         }
     };
 
@@ -348,6 +367,24 @@ const BookmarksTab = () => {
     return (
         <div className="bookmarks-tab">
             {error && <div className="error-message">{error}</div>}
+            {notification && (
+                <div
+                    className="notification-message"
+                    style={{
+                        position: 'fixed',
+                        top: '20px',
+                        right: '20px',
+                        backgroundColor: '#4f46e5',
+                        color: '#ffffff',
+                        padding: '12px 20px',
+                        borderRadius: '6px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        zIndex: 1000,
+                        animation: 'fadeIn 0.3s ease-out',
+                    }}>
+                    {notification}
+                </div>
+            )}
 
             {/* Always show the Add Bookmark button at the top */}
             <div className="add-button-container">
@@ -366,9 +403,6 @@ const BookmarksTab = () => {
                             <div className="bookmark-content">
                                 <div className="bookmark-header">
                                     <div className="bookmark-title">
-                                        <div className="favicon">
-                                            <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
-                                        </div>
                                         <h3>
                                             <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
                                                 {bookmark.title}

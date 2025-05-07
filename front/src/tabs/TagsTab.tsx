@@ -4,6 +4,7 @@ import { api } from '../services/api';
 
 interface Tag {
     id: number;
+    user_id: number;
     name: string;
     slug: string;
 }
@@ -46,10 +47,10 @@ const TagsTab: React.FC = () => {
     return (
         <div className="dashboard-tab-content">
             {tags.map((tag) => (
-                <div key={tag.id} className="tag-section">
+                <div key={tag.id} className="tag-section" style={{ marginTop: '12px' }}>
                     <h2 className="tag-header">{tag.name}</h2>
                     {(taggedBookmarks[tag.id] || []).map((bookmark) => (
-                        <div key={bookmark.id} className="bookmark-card">
+                        <div key={bookmark.id} className="bookmark-card" style={{ marginTop: '6px' }}>
                             <div className="bookmark-content">
                                 <div className="bookmark-header">
                                     <div className="bookmark-title">
