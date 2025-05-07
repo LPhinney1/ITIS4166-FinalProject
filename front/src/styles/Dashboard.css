@@ -922,6 +922,10 @@ textarea.form-control {
     margin-top: 0.25rem;
 }
 
+input:disabled {
+    color: rgba(255, 255, 255, 0.596);
+}
+
 /* Style for the form button */
 .settings-form .form-button {
     width: 100%;
