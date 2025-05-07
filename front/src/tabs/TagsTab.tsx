@@ -45,38 +45,43 @@ const TagsTab: React.FC = () => {
     const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString();
 
     return (
-        <div className="dashboard-tab-content">
+        <div className="dashboard-tab-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {tags.map((tag) => (
-                <div key={tag.id} className="tag-section" style={{ marginTop: '12px' }}>
+                <div key={tag.id} className="tag-section" style={{
+                    marginTop: '12px',
+                    width: '100%'
+                }}>
                     <h2 className="tag-header">{tag.name}</h2>
-                    {(taggedBookmarks[tag.id] || []).map((bookmark) => (
-                        <div key={bookmark.id} className="bookmark-card" style={{ marginTop: '6px' }}>
-                            <div className="bookmark-content">
-                                <div className="bookmark-header">
-                                    <div className="bookmark-title">
-                                        <div className="favicon">
-                                            <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {(taggedBookmarks[tag.id] || []).map((bookmark) => (
+                            <div key={bookmark.id} className="bookmark-card">
+                                <div className="bookmark-content">
+                                    <div className="bookmark-header">
+                                        <div className="bookmark-title">
+                                            <div className="favicon">
+                                                <img src={`https://www.google.com/s2/favicons?domain=${bookmark.url}`} alt="" />
+                                            </div>
+                                            <h3>
+                                                <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+                                                    {bookmark.title}
+                                                </a>
+                                            </h3>
                                         </div>
-                                        <h3>
-                                            <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-                                                {bookmark.title}
-                                            </a>
-                                        </h3>
                                     </div>
-                                </div>
-                                <p className="bookmark-description">{bookmark.description}</p>
-                                <div className="bookmark-meta">
-                                    <div className="bookmark-date">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        <span>{formatDate(bookmark.created_at)}</span>
+                                    <p className="bookmark-description">{bookmark.description}</p>
+                                    <div className="bookmark-meta">
+                                        <div className="bookmark-date">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            <span>{formatDate(bookmark.created_at)}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             ))}
         </div>
