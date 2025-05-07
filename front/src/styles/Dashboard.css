@@ -1,4 +1,4 @@
-/* src/styles/Dashboard.css */
+/* src/styles/Dashboard.css - Cleaned up version */
 :root {
     --primary-color: #4f46e5;
     --primary-light: #818cf8;
@@ -40,7 +40,7 @@ body {
     line-height: 1.5;
 }
 
-/* Layout */
+/* ===== Layout ===== */
 .app-container {
     display: flex;
     min-height: 100vh;
@@ -48,7 +48,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Sidebar */
+/* ===== Sidebar ===== */
 .sidebar {
     width: 250px;
     background-color: var(--white);
@@ -122,8 +122,8 @@ body {
 .sidebar-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--gray-200);
-    margin-top: auto; /* Push to bottom */
-    margin-bottom: 0.5rem; /* Add space at the bottom */
+    margin-top: auto;
+    margin-bottom: 0.5rem;
 }
 
 .user-profile {
@@ -147,7 +147,7 @@ body {
 
 .user-info {
     flex: 1;
-    overflow: hidden; /* Prevent overflow */
+    overflow: hidden;
 }
 
 .user-name {
@@ -166,7 +166,7 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Main Content */
+/* ===== Main Content ===== */
 .main-content {
     flex: 1;
     margin-left: 250px;
@@ -180,16 +180,15 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    gap: 2rem; /* Add spacing between elements */
+    margin-bottom: 2rem;
 }
 
 .content-title {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--gray-900);
-    margin-right: 1.5rem; /* Add spacing after the title */
-    min-width: max-content; /* Prevent wrapping */
+    margin-right: 1.5rem;
+    min-width: max-content;
 }
 
 .content-section {
@@ -203,86 +202,41 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Actions */
-.actions {
+.section-header {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
     align-items: center;
-}
-
-/* Search Bar */
-.search-bar {
+    margin-bottom: 1rem;
     position: relative;
-    width: 250px;
-    flex: 1; /* Allow search bar to take remaining space */
-    max-width: 500px; /* Limit maximum width */
 }
 
-.search-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--border-radius);
-    font-size: 0.875rem;
-    transition: border-color 0.2s;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 1px var(--primary-light);
-}
-
-.search-icon {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gray-400);
-    width: 16px;
-    height: 16px;
-}
-
-.view-all-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.view-all-button {
+.section-add-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    color: #4f46e5;
-    font-weight: 500;
-    font-size: 0.875rem;
-    transition: all 0.2s ease-in-out;
+    border: none;
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
 }
 
-.view-all-button:hover {
-    background-color: #4f46e5;
-    color: #ffffff;
-    border-color: #4f46e5;
+.section-add-button:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.view-all-button svg {
-    width: 16px;
-    height: 16px;
-    transition: transform 0.2s ease-in-out;
+.section-add-button svg {
+    width: 18px;
+    height: 18px;
 }
 
-.view-all-button:hover svg {
-    transform: translateX(3px);
-}
-
-/* Buttons */
+/* ===== Buttons ===== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -312,8 +266,8 @@ body {
     background-color: transparent;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
-    width: 100px; /* Fixed width */
-    min-width: 100px; /* Ensure fixed width even when contents try to expand */
+    width: 100px;
+    min-width: 100px;
 }
 
 .btn-outline:hover {
@@ -321,7 +275,259 @@ body {
     color: var(--white);
 }
 
-/* Empty state */
+.add-button-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.5rem 0;
+}
+
+.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-button:hover {
+    background-color: var(--primary-dark);
+}
+
+.plus-icon {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.view-all-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.view-all-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.view-all-button:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.view-all-button svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.view-all-button:hover svg {
+    transform: translateX(3px);
+}
+
+/* ===== Dashboard & Tabs ===== */
+.dashboard-grid,
+.bookmarks-grid,
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.bookmark-card,
+.collection-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmark-card:hover,
+.collection-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.collection-card:hover {
+    background-color: #fafafa;
+}
+
+.collection-card {
+    cursor: pointer;
+}
+
+.bookmark-thumbnail {
+    height: 120px;
+    background-color: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    overflow: hidden;
+}
+
+.bookmark-thumbnail img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.bookmark-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmark-header,
+.collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.bookmark-title,
+.collection-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.bookmark-title h3,
+.collection-title h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bookmark-description,
+.collection-description {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.5rem;
+    flex: 1;
+}
+
+.bookmark-meta,
+.collection-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    border-top: 1px solid var(--gray-200);
+    padding-top: 0.75rem;
+}
+
+.bookmark-date,
+.bookmark-count,
+.collection-date {
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-date svg,
+.bookmark-count svg,
+.collection-date svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 0.25rem;
+}
+
+/* Action buttons */
+.bookmark-actions,
+.collection-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--border-radius);
+    border: none;
+    background-color: transparent;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.action-btn.edit:hover {
+    color: var(--primary-color);
+    background-color: var(--gray-100);
+}
+
+.action-btn.delete:hover {
+    color: var(--danger-color);
+    background-color: var(--gray-100);
+}
+
+.action-btn.add-to-collection:hover {
+    color: var(--secondary-color);
+    background-color: var(--gray-100);
+}
+
+/* ===== Loading & Empty States ===== */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -355,136 +561,7 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Big plus sign for empty bookmarks - normalized version */
-.empty-bookmarks-container {
-    display: none !important;
-}
-
-.empty-bookmarks-container:hover {
-    background-color: var(--primary-dark);
-}
-
-.big-plus-icon {
-    font-size: 64px;
-    font-weight: 300;
-    margin-bottom: 1rem;
-}
-
-.add-bookmark-text {
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.add-button-container {
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: flex-start;
-    padding: 0.5rem 0;
-}
-
-.add-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #6366f1; /* Purple/indigo color from the image */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.add-button:hover {
-    background-color: #4f46e5; /* Darker shade on hover */
-}
-
-.plus-icon {
-    margin-right: 0.5rem;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-/* Section header with title and action button */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.section-action {
-    background-color: transparent;
-    color: var(--primary-color);
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    transition: color 0.2s;
-}
-
-.section-action:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-/* Dashboard grid layout */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-/* Add card for dashboard */
-.add-card {
-    background-color: var(--gray-100);
-    border: 2px dashed var(--gray-300);
-    border-radius: var(--border-radius);
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.add-card:hover {
-    background-color: var(--gray-200);
-    border-color: var(--primary-color);
-}
-
-.add-card-content {
-    text-align: center;
-    color: var(--gray-600);
-}
-
-.add-icon {
-    font-size: 2rem;
-    font-weight: 300;
-    margin-bottom: 0.5rem;
-    color: var(--gray-500);
-}
-
-.add-card:hover .add-icon {
-    color: var(--primary-color);
-}
-
-/* Loading state */
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    color: var(--gray-500);
-    font-size: 0.875rem;
-}
-
-/* Back button for collection view */
+/* ===== Collection View ===== */
 .collection-header-with-back {
     display: flex;
     align-items: center;
@@ -496,17 +573,17 @@ body {
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    background-color: #f3f4f6;
+    background-color: var(--gray-100);
     border: none;
-    border-radius: 0.375rem;
+    border-radius: var(--border-radius);
     font-size: 0.875rem;
-    color: #4b5563;
+    color: var(--gray-600);
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .back-button:hover {
-    background-color: #e5e7eb;
+    background-color: var(--gray-200);
 }
 
 .back-button svg {
@@ -515,258 +592,7 @@ body {
     margin-right: 0.5rem;
 }
 
-/* Make cards on the dashboard slightly smaller */
-.dashboard-grid .bookmark-card,
-.dashboard-grid .collection-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.collection-card {
-    cursor: pointer;
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s,
-        background-color 0.1s;
-}
-
-.dashboard-grid .bookmark-thumbnail {
-    height: 100px;
-}
-
-.dashboard-grid .bookmark-content,
-.dashboard-grid .collection-card > :not(.collection-header) {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-grid .bookmark-description,
-.dashboard-grid .collection-description {
-    flex: 1;
-    margin-bottom: 1rem;
-}
-
-.bookmarks-grid,
-.collections-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.bookmark-card,
-.collection-card {
-    background-color: var(--white, #ffffff);
-    border-radius: var(--border-radius, 0.375rem);
-    box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
-    padding: 1.25rem;
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s;
-}
-
-.bookmark-card:hover,
-.collection-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
-}
-
-.collection-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    background-color: #fafafa;
-}
-
-/* Ensure space between collection title and description in collection view */
-.collections-tab .collection-title {
-    margin-bottom: 0.5rem;
-}
-
-/* Ensure bookmark cards in collection view are consistent with bookmark tab */
-.collections-tab .bookmarks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.bookmark-thumbnail {
-    height: 120px;
-    background-color: var(--gray-100, #f3f4f6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    overflow: hidden;
-}
-
-.bookmark-thumbnail img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.bookmark-content {
-    padding: 1.25rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.bookmark-header,
-.collection-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
-
-.bookmark-title,
-.collection-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--gray-800, #1f2937);
-    margin: 0;
-}
-
-.bookmark-title h3,
-.collection-title h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.favicon {
-    flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.favicon img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.bookmark-description,
-.collection-description {
-    font-size: 0.875rem;
-    color: var(--gray-600, #4b5563);
-    margin-bottom: 1.25rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.5rem;
-}
-
-.bookmark-meta,
-.collection-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    color: var(--gray-500, #6b7280);
-    border-top: 1px solid var(--gray-200, #e5e7eb);
-    padding-top: 0.75rem;
-}
-
-.bookmark-date,
-.bookmark-count,
-.collection-date {
-    display: flex;
-    align-items: center;
-}
-
-.bookmark-date svg,
-.bookmark-count svg,
-.collection-date svg {
-    width: 14px;
-    height: 14px;
-    margin-right: 0.25rem;
-}
-
-/* Action buttons */
-.bookmark-actions,
-.collection-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.action-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: var(--border-radius, 0.375rem);
-    border: none;
-    background-color: transparent;
-    color: var(--gray-500, #6b7280);
-    cursor: pointer;
-    transition:
-        background-color 0.2s,
-        color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.action-btn svg {
-    width: 16px;
-    height: 16px;
-}
-
-.action-btn.edit:hover {
-    color: var(--primary-color, #4f46e5);
-    background-color: var(--gray-100, #f3f4f6);
-}
-
-.action-btn.delete:hover {
-    color: var(--danger-color, #ef4444);
-    background-color: var(--gray-100, #f3f4f6);
-}
-
-.tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1.5rem;
-}
-
-.add-collection-btn,
-.add-bookmark-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    height: auto;
-    width: auto;
-}
-
-.add-collection-btn svg,
-.add-bookmark-btn svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-/* Make sure button text doesn't wrap */
-.add-collection-btn span,
-.add-bookmark-btn span {
-    white-space: nowrap;
-}
-
-/* Modal backdrop and animation */
+/* ===== Modals ===== */
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -790,13 +616,12 @@ body {
     visibility: visible;
 }
 
-/* Modal container */
 .modal {
     width: 90%;
     max-width: 500px;
-    background-color: var(--white, #ffffff);
-    border-radius: var(--border-radius, 0.375rem);
-    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
     transform: scale(0.95);
     transition: transform 0.3s;
     max-height: 90vh;
@@ -808,19 +633,18 @@ body {
     transform: scale(1);
 }
 
-/* Modal header */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--gray-200, #e5e7eb);
+    border-bottom: 1px solid var(--gray-200);
 }
 
 .modal-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--gray-900, #111827);
+    color: var(--gray-900);
     margin: 0;
 }
 
@@ -834,15 +658,15 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--gray-500, #6b7280);
+    color: var(--gray-500);
     transition:
         background-color 0.2s,
         color 0.2s;
 }
 
 .modal-close:hover {
-    background-color: var(--gray-100, #f3f4f6);
-    color: var(--gray-700, #374151);
+    background-color: var(--gray-100);
+    color: var(--gray-700);
 }
 
 .modal-close svg {
@@ -850,23 +674,21 @@ body {
     height: 20px;
 }
 
-/* Modal body */
 .modal-body {
     padding: 1.5rem;
     overflow-y: auto;
     flex: 1;
 }
 
-/* Modal footer */
 .modal-footer {
     padding: 1rem 1.5rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    border-top: 1px solid var(--gray-200, #e5e7eb);
+    border-top: 1px solid var(--gray-200);
 }
 
-/* Form elements inside modal */
+/* ===== Forms ===== */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -879,18 +701,18 @@ body {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: var(--gray-700, #374151);
+    color: var(--gray-700);
     font-size: 0.875rem;
 }
 
 .form-control {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    border: 1px solid var(--gray-300, #d1d5db);
-    border-radius: var(--border-radius, 0.375rem);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
     font-size: 0.875rem;
-    color: var(--gray-800, #1f2937);
-    background-color: var(--white, #ffffff);
+    color: var(--gray-800);
+    background-color: var(--white);
     transition:
         border-color 0.2s,
         box-shadow 0.2s;
@@ -898,7 +720,7 @@ body {
 
 .form-control:focus {
     outline: none;
-    border-color: var(--primary-color, #4f46e5);
+    border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
@@ -907,170 +729,37 @@ textarea.form-control {
     resize: vertical;
 }
 
-/* Mobile Menu Button */
-.mobile-menu-btn {
-    display: none;
+.error-message {
+    color: var(--danger-color);
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+.notification-message {
     position: fixed;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    top: 20px;
+    right: 20px;
     background-color: var(--primary-color);
     color: var(--white);
+    padding: 12px 20px;
+    border-radius: 6px;
     box-shadow: var(--shadow-md);
-    z-index: 20;
-    cursor: pointer;
-    border: none;
-    align-items: center;
-    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
 }
 
-.mobile-menu-btn svg {
-    width: 24px;
-    height: 24px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.section-add-button {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #4f46e5;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease-in-out;
-}
-
-.section-add-button:hover {
-    background-color: #4338ca;
-    transform: scale(1.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.section-add-button svg {
-    width: 18px;
-    height: 18px;
-}
-
-.view-all-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.view-all-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    color: #4f46e5;
-    font-weight: 500;
-    font-size: 0.875rem;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.view-all-button:hover {
-    background-color: #4f46e5;
-    color: #ffffff;
-    border-color: #4f46e5;
-}
-
-.view-all-button svg {
-    width: 16px;
-    height: 16px;
-    transition: transform 0.2s ease-in-out;
-}
-
-.view-all-button:hover svg {
-    transform: translateX(3px);
-}
-
-/* Updates for main content header after removing search bar */
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-/* We can remove the section-action button since we're using the new view-all-button */
-.section-action {
-    display: none;
-}
-
-/* Hide the add-card elements since we now have the add buttons in section headers */
-.add-card {
-    display: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
-
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .content-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .actions {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-bar {
-        width: 100%;
-    }
-
-    .mobile-menu-btn {
-        display: flex;
-    }
-    .modal {
-        width: 95%;
-        max-height: 95vh;
-    }
-
-    .modal-body {
-        padding: 1rem;
-    }
-
-    .modal-footer {
-        padding: 0.75rem 1rem;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* SettingsTab Styles */
+/* ===== Settings Tab ===== */
 .settings-wrapper {
     display: flex;
     justify-content: center;
@@ -1127,33 +816,92 @@ textarea.form-control {
     background-color: var(--primary-dark);
 }
 
-.settings-form .form-success,
-.settings-form .form-error {
+.settings-form .form-success {
+    color: var(--success-color);
     font-size: 0.875rem;
     margin-top: 0.5rem;
 }
 
-.settings-form .form-success {
-    color: var(--success-color);
-}
-
 .settings-form .form-error {
     color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
 }
 
 .dashboard-tab-content {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* keep content top-aligned */
+    align-items: flex-start;
     padding-top: 1rem;
     padding-bottom: 2rem;
 }
 
-.tab-container {
-    max-width: 1000px;
-    margin: 0 auto; /* Centers the container */
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
+/* ===== Mobile Menu ===== */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: var(--shadow-md);
+    z-index: 20;
+    cursor: pointer;
+    border: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-footer {
+        padding: 0.75rem 1rem;
+    }
+
+    .dashboard-grid,
+    .bookmarks-grid,
+    .collections-grid {
+        grid-template-columns: 1fr;
+    }
 }
