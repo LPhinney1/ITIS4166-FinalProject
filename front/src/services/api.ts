@@ -167,7 +167,11 @@ export const api = {
 
     // Tag methods
     tags: {
-        getAll: () => fetchWithAuth('/api/tags'),
+        getAll: async () => {
+            const data = await fetchWithAuth('/api/tags');
+            const userId = getUserIdFromToken();
+            return data.filter((tag: any) => tag.user_id === userId);
+        },
         getById: (id: number) => fetchWithAuth(`/api/tags/${id}`),
         create: (data: { name: string; slug: string }) =>
             fetchWithAuth('/api/tags', {
