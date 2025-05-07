@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
 import CollectionsTab from '../tabs/CollectionsTab';
+import TagsTab from '../tabs/TagsTab'
+//import SettingsTab from '../tabs/SettingsTab'
 import { api } from '../services/api';
 import { useDataRefresh } from '../context/DataRefreshContext';
 import '../styles/Dashboard.css';
@@ -27,6 +29,23 @@ interface Collection {
     bookmarkCount?: number;
 }
 
+// interface Tags {
+//     id: number;
+//     name: string;
+//     slug: string;
+//     created_at: string;
+//     updated_at: string;
+// }
+
+// interface Settings {
+//     id: number;
+//     username: string;
+//     email: string;
+//     password_has: string;
+//     created_at: string;
+//     updated_at: string;
+// }
+
 const Dashboard = () => {
     const { logout, token } = useUser();
     const { bookmarksVersion, collectionsVersion } = useDataRefresh();
@@ -36,6 +55,7 @@ const Dashboard = () => {
     const [username, setUsername] = useState('User');
     const [recentBookmarks, setRecentBookmarks] = useState<Bookmark[]>([]);
     const [userCollections, setUserCollections] = useState<Collection[]>([]);
+    //const [userSettings, setUserSettings] = useState<Settings[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Extract username from token and fetch user data
@@ -170,6 +190,13 @@ const Dashboard = () => {
                             <line x1="7" y1="7" x2="7.01" y2="7"></line>
                         </svg>
                         <span>Tags</span>
+                    </a>
+                    <a href="#" className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => handleTabClick('settings')}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                        <span>Settings</span>
                     </a>
                 </div>
                 <div className="sidebar-footer">
@@ -385,7 +412,9 @@ const Dashboard = () => {
                     {activeTab === 'collections' && <CollectionsTab />}
 
                     {/* Tags Tab */}
-                    {activeTab === 'tags' && (
+                    {activeTab === 'tags' && <TagsTab />} {/* ✅ NEW */}
+
+                    {/* {activeTab === 'tags' && (
                         <div className="tags-tab">
                             <div className="empty-state">
                                 <svg
@@ -404,9 +433,12 @@ const Dashboard = () => {
                                 <p className="empty-state-description">Tags will appear when you add them to your bookmarks.</p>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
+            
+            {/* Settings */}
+
 
             {/* Mobile Menu Button */}
             <button className="mobile-menu-btn" onClick={toggleSidebar}>
