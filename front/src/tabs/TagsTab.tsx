@@ -58,19 +58,22 @@ const TagsTab: React.FC = () => {
             {tags.map((tag) => (
                 <div key={tag.id} className="tag-section" style={{ marginTop: '12px', width: '100%' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <h2 className="tag-header">{tag.name}</h2>
+                        <h2 className="tag-header" style={{ marginBottom: '6px' }}>{tag.name}</h2>
                         <button
-                            onClick={() => deleteTag(tag.id)}
-                            style={{
-                                color: 'red',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '1.2rem'
-                            }}
-                            title="Delete tag"
-                        >
-                            ×
+                            className="action-btn delete"
+                            title="Delete Bookmark"
+                            onClick={() => deleteTag(tag.id)}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
                         </button>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
