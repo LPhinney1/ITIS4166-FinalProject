@@ -445,12 +445,51 @@ body {
     font-size: 0.875rem;
 }
 
+/* Back button for collection view */
+.collection-header-with-back {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: #e5e7eb;
+}
+
+.back-button svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
+}
+
 /* Make cards on the dashboard slightly smaller */
 .dashboard-grid .bookmark-card,
 .dashboard-grid .collection-card {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.collection-card {
+    cursor: pointer;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background-color 0.1s;
 }
 
 .dashboard-grid .bookmark-thumbnail {
@@ -493,6 +532,25 @@ body {
 .collection-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.collection-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    background-color: #fafafa;
+}
+
+/* Ensure space between collection title and description in collection view */
+.collections-tab .collection-title {
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure bookmark cards in collection view are consistent with bookmark tab */
+.collections-tab .bookmarks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .bookmark-thumbnail {
