@@ -168,13 +168,25 @@ export const api = {
 
     // Tag methods
     tags: {
-        getAll: () => fetchWithAuth('/api/tags'),
+        getAll: async () => {
+            const data = await fetchWithAuth('/api/tags');
+            const userId = getUserIdFromToken();
+            return data.filter((tag: any) => tag.user_id === userId);
+        },
         getById: (id: number) => fetchWithAuth(`/api/tags/${id}`),
-        create: (data: { name: string; slug: string }) =>
-            fetchWithAuth('/api/tags', {
+        create: (data: { name: string; slug: string }) => {
+            const userId = getUserIdFromToken();
+            if (!userId) throw new Error('User ID not available');
+
+            return fetchWithAuth('/api/tags', {
                 method: 'POST',
-                body: JSON.stringify(data),
-            }),
+                body: JSON.stringify({
+                    user_id: userId,
+                    name: data.name,
+                    slug: data.slug,
+                }),
+            });
+        },
         update: (id: number, data: { name?: string; slug?: string }) =>
             fetchWithAuth('/api/tags', {
                 method: 'PUT',

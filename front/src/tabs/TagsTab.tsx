@@ -4,6 +4,7 @@ import { api } from '../services/api';
 
 interface Tag {
     id: number;
+    user_id: number;
     name: string;
     slug: string;
 }
