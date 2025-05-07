@@ -861,6 +861,98 @@ textarea.form-control {
     height: 24px;
 }
 
+/* Profile Settings Styles */
+.profile-preview {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--gray-50);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+}
+
+.avatar-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+}
+
+.profile-info-preview {
+    flex: 1;
+}
+
+.display-name-preview {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--gray-800);
+    margin-bottom: 0.125rem;
+}
+
+.email-preview {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.form-help {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 0.25rem;
+}
+
+/* Make sure form inputs have consistent styling */
+.settings-form .form-input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Style for the form button */
+.settings-form .form-button {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.settings-form .form-button:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Success and error message styling */
+.settings-form .form-success {
+    color: var(--success-color);
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background-color: rgba(16, 185, 129, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.settings-form .form-error {
+    color: var(--danger-color);
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-radius: var(--border-radius);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .sidebar {
