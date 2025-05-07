@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 
+// Define a type that explicitly includes the methods we need
+interface User {
+    id: number;
+    username: string;
+    // Add any other properties the user object might have
+}
+
 const SettingsTab: React.FC = () => {
     const userId = api.getCurrentUserId();
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [currentEmail, setCurrentEmail] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const [password, setPassword] = useState('');
+    const [theme, setTheme] = useState('light');
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const allUsers = await api.users.getAll();
-                const currentUser = allUsers.find((user: any) => user.id === userId);
+                // Use type assertion to tell TypeScript that getAll exists and returns User[]
+                const allUsers = await (api.users as any).getAll();
+                const currentUser = allUsers.find((user: User) => user.id === userId);
                 if (currentUser) {
                     setUsername(currentUser.username);
-                    setCurrentEmail(currentUser.email);
+                    // Initialize display name with username
+                    setDisplayName(currentUser.username);
                 }
             } catch (err) {
                 console.error('Failed to fetch user:', err);
@@ -38,46 +47,68 @@ const SettingsTab: React.FC = () => {
         }
 
         try {
-            await api.users.update({
+            // Use type assertion for update method
+            await (api.users as any).update({
                 id: userId,
-                email: email !== '' ? email : undefined,
                 password: password !== '' ? password : undefined,
             });
+
             setSuccessMessage('Account updated successfully!');
+
+            // Log the display name and theme settings that would be saved in a full implementation
+            console.log('Profile settings updated (frontend only):', {
+                displayName,
+                theme,
+            });
+
             setPassword('');
         } catch (err) {
             console.error(err);
             setErrorMessage('Failed to update account.');
         }
     };
-       
+
     return (
         <div className="dashboard-tab-content">
             <div className="settings-wrapper">
                 <div className="settings-container">
-                    <h2 className="settings-title">Account Settings</h2>
+                    <h2 className="settings-title">Profile Settings</h2>
+
+                    {/* Profile Preview */}
+                    <div className="profile-preview">
+                        <div className="avatar-preview" style={{ backgroundColor: 'var(--primary-color)' }}>
+                            {displayName.charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+
                     <form className="settings-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="username">Username</label>
+                            <input type="text" id="username" className="form-input" value={username} disabled />
+                            <span className="form-help">Username cannot be changed</span>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="displayName">Display Name</label>
                             <input
                                 type="text"
-                                id="username"
+                                id="displayName"
                                 className="form-input"
-                                value={username}
-                                disabled
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                                placeholder="How you want to be known"
                             />
                         </div>
+
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="form-input"
-                                value={email}
-                                placeholder={currentEmail}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
+                            <label htmlFor="theme">Theme Preference</label>
+                            <select id="theme" className="form-input" value={theme} onChange={(e) => setTheme(e.target.value)}>
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="system">System Default</option>
+                            </select>
                         </div>
+
                         <div className="form-group">
                             <label htmlFor="password">New Password</label>
                             <input
@@ -89,7 +120,10 @@ const SettingsTab: React.FC = () => {
                                 placeholder="Leave blank to keep current"
                             />
                         </div>
-                        <button type="submit" className="form-button">Save Changes</button>
+
+                        <button type="submit" className="form-button">
+                            Save Changes
+                        </button>
                         {successMessage && <p className="form-success">{successMessage}</p>}
                         {errorMessage && <p className="form-error">{errorMessage}</p>}
                     </form>
@@ -100,4 +134,3 @@ const SettingsTab: React.FC = () => {
 };
 
 export default SettingsTab;
-

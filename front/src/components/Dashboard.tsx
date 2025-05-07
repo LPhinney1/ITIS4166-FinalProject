@@ -2,8 +2,8 @@ import { useState, useEffect, createContext } from 'react';
 import { useUser } from '../context/UseUser';
 import BookmarksTab from '../tabs/BookmarksTab';
 import CollectionsTab from '../tabs/CollectionsTab';
-import TagsTab from '../tabs/TagsTab'
-import SettingsTab from '../tabs/SettingsTab'
+import TagsTab from '../tabs/TagsTab';
+import SettingsTab from '../tabs/SettingsTab';
 import { api } from '../services/api';
 import { useDataRefresh } from '../context/DataRefreshContext';
 import '../styles/Dashboard.css';
@@ -803,6 +803,9 @@ const Dashboard = () => {
 
                         {/* Tags Tab */}
                         {activeTab === 'tags' && <TagsTab />}
+
+                        {/* Settings Tab */}
+                        {activeTab === 'settings' && <SettingsTab />}
                     </div>
                 </SelectedCollectionContext.Provider>
             </div>
