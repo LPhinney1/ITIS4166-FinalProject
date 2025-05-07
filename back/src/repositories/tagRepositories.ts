@@ -2,6 +2,7 @@ import { db } from '../database/db.js';
 
 export type Tag = {
     id: number;
+    user_id: number;
     name: string;
     slug: string;
     created_at: Date;
@@ -11,7 +12,7 @@ export type Tag = {
 export async function getAllTags(): Promise<Tag[]> {
     return (await db
         .selectFrom('tags')
-        .select(['id', 'name', 'slug', 'created_at', 'updated_at'])
+        .select(['id', 'user_id', 'name', 'slug', 'created_at', 'updated_at'])
         .orderBy('id', 'asc')
         .execute()) as Tag[];
 }
@@ -19,22 +20,23 @@ export async function getAllTags(): Promise<Tag[]> {
 export async function getTagById(id: number): Promise<Tag | undefined> {
     return await db
         .selectFrom('tags')
-        .select(['id', 'name', 'slug', 'created_at', 'updated_at'])
+        .select(['id', 'user_id', 'name', 'slug', 'created_at', 'updated_at'])
         .where('id', '=', id)
         .executeTakeFirst();
 }
 
-export async function createTag(tag: { name: string; slug: string }): Promise<Tag> {
+export async function createTag(tag: { user_id: number; name: string; slug: string }): Promise<Tag> {
     return await db.transaction().execute(async (trx) => {
         return (await trx
             .insertInto('tags')
             .values({
+                user_id: tag.user_id,
                 name: tag.name,
                 slug: tag.slug,
                 created_at: new Date(),
                 updated_at: new Date(),
             })
-            .returning(['id', 'name', 'slug', 'created_at', 'updated_at'])
+            .returning(['id', 'user_id', 'name', 'slug', 'created_at', 'updated_at'])
             .executeTakeFirstOrThrow()) as Tag;
     });
 }
@@ -49,7 +51,7 @@ export async function updateTag(tag: Partial<Tag>): Promise<Tag> {
                 updated_at: new Date(),
             })
             .where('id', '=', Number(tag.id))
-            .returning(['id', 'name', 'slug', 'created_at', 'updated_at'])
+            .returning(['id', 'user_id', 'name', 'slug', 'created_at', 'updated_at'])
             .executeTakeFirstOrThrow()) as Tag;
     });
 }

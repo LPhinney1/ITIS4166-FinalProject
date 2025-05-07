@@ -31,6 +31,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .createTable('tags')
         .ifNotExists()
         .addColumn('id', 'serial', (col) => col.primaryKey())
+        .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade').notNull())
         .addColumn('name', 'varchar(100)', (col) => col.unique().notNull())
         .addColumn('slug', 'varchar(100)', (col) => col.unique().notNull())
         .addColumn('created_at', 'timestamp', (col) => col.defaultTo(`now()`).notNull())
