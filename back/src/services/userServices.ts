@@ -30,18 +30,18 @@ export async function updateUser(updatedUser: Partial<User>): Promise<User> {
     const existingUser = await userRepositories.getUserById(updatedUser.id);
     if (!existingUser) return Promise.reject(new Error('ID did not match any users'));
 
-    const userUpdate: Partial<User> = {
-        id: updatedUser.id,
-        username: updatedUser.username !== undefined ? updatedUser.username : existingUser.username,
-        email: updatedUser.email !== undefined ? updatedUser.email : existingUser.email,
-        password: existingUser.password // Start with existing password
-    };
-
+    let hashedPassword = existingUser.password;
     if (updatedUser.password) {
-        userUpdate.password = await bcrypt.hash(updatedUser.password, 10);
+        hashedPassword = await bcrypt.hash(updatedUser.password, 10);
     }
 
-    return userRepositories.updateUser(userUpdate);
+    console.log(hashedPassword);
+    return userRepositories.updateUser({
+        id: updatedUser.id,
+        username: updatedUser.username ?? existingUser.username,
+        email: updatedUser.email ?? existingUser.email,
+        password: hashedPassword,
+    });
 }
 
 export async function deleteUser(id: number) {
