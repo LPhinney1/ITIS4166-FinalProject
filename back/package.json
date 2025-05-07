@@ -7,7 +7,8 @@
         "dev": "tsx watch src/index.ts",
         "lint": "eslint .",
         "build": "tsc",
-        "start": "node dist/index.js"
+        "start": "node dist/index.js",
+        "test": "node --test tests/*.test.ts"
     },
     "keywords": [],
     "author": "",
@@ -29,10 +30,12 @@
         "@types/jsonwebtoken": "^9.0.9",
         "@types/node": "^22.13.14",
         "@types/pg": "^8.11.11",
+        "@types/supertest": "^6.0.3",
         "dotenv": "^16.5.0",
         "eslint": "^9.23.0",
         "eslint-config-prettier": "^10.1.1",
         "prettier": "^3.5.3",
+        "supertest": "^7.1.0",
         "tsx": "^4.19.3",
         "typescript": "^5.8.2",
         "typescript-eslint": "^8.29.0"
